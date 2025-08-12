@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>NutriPOS – Saved Products</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    table { width:100%; border-collapse: collapse; }
+    th, td { padding: 8px; border-bottom: 1px solid #eee; text-align:left; }
+    .btn { padding:6px 10px; border:1px solid #ccc; border-radius:6px; background:#fff; cursor:pointer; }
+    .btn.danger { border-color:#e33; color:#e33; }
+  </style>
+</head>
+<body>
+  <h1>Saved Products</h1>
+  <a href="custom.html" class="btn">+ Create New</a>
+  <table>
+    <thead><tr><th>Name</th><th>Updated</th><th>Actions</th></tr></thead>
+    <tbody id="list"></tbody>
+  </table>
+  <script src="products.js"></script>
+  <script>
+    listProducts();
+  </script>
+</body>
+</html>

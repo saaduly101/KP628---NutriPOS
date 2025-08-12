@@ -1,0 +1,65 @@
+{
+    "products": [
+        {
+            "id": "567a6dbc3dfe1791",
+            "name": "Complete Beef Burger",
+            "ingredients": [
+                {
+                    "name": "Beef, all cuts, separable fat, cooked, no added fat",
+                    "afcd_code": "F000472",
+                    "notes": "",
+                    "grams": 120
+                },
+                {
+                    "name": "Bread roll, from white flour",
+                    "afcd_code": "F001353",
+                    "notes": "",
+                    "grams": 80
+                },
+                {
+                    "name": "Tomato, common, raw",
+                    "afcd_code": "F009193",
+                    "notes": "",
+                    "grams": 30
+                },
+                {
+                    "name": "Beetroot, fresh, purple, peeled, baked, no added fat",
+                    "afcd_code": "F001013",
+                    "notes": "",
+                    "grams": 25
+                },
+                {
+                    "name": "Lettuce, iceberg, raw",
+                    "afcd_code": "F005192",
+                    "notes": "",
+                    "grams": 15
+                },
+                {
+                    "name": "Sauce, tomato, commercial",
+                    "afcd_code": "F008083",
+                    "notes": "Extra $1",
+                    "grams": 15
+                },
+                {
+                    "name": "Sauce, barbecue, commercial",
+                    "afcd_code": "F007987",
+                    "notes": "Extra $1",
+                    "grams": 15
+                },
+                {
+                    "name": "Mayonnaise, traditional (greater than 65% fat), commercial",
+                    "afcd_code": "F005441",
+                    "notes": "Extra $1",
+                    "grams": 20
+                },
+                {
+                    "name": "Cheese, cheddar, natural, regular fat",
+                    "afcd_code": "F002414",
+                    "notes": "",
+                    "grams": 30
+                }
+            ],
+            "updated_at": "2025-08-12T02:41:07+00:00"
+        }
+    ]
+}
