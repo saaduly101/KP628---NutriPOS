@@ -8,17 +8,7 @@ auth_require_admin();
 <head>
   <meta charset="utf-8" />
   <title>NutriPOS – Orders</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; padding: 16px; }
-    h1 { margin: 0 0 12px; }
-    table { border-collapse: collapse; width: 100%; max-width: 1100px; }
-    th, td { border-bottom: 1px solid #eee; padding: 8px 10px; font-size: 14px; }
-    th { text-align: left; background: #fafafa; }
-    .muted { color: #777; }
-    .right { text-align: right; }
-    .toolbar { margin: 10px 0 14px; display: flex; gap: 8px; align-items: center; }
-    .pill { display: inline-block; padding: 2px 8px; border-radius: 999px; background:#f2f2f2; font-size: 12px; }
-  </style>
+  
 </head>
 <body>
   <h1>Orders</h1>
