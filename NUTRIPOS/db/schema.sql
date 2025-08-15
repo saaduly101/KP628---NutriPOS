@@ -1,0 +1,35 @@
+-- Works for MySQL and PostgreSQL with minor changes
+
+-- users
+CREATE TABLE IF NOT EXISTS users (
+  id SERIAL PRIMARY KEY,
+  email VARCHAR(255) UNIQUE NOT NULL,
+  password_hash VARCHAR(255) NOT NULL,
+  role VARCHAR(32) NOT NULL DEFAULT 'admin',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- orders
+CREATE TABLE IF NOT EXISTS orders (
+  id SERIAL PRIMARY KEY,
+  created_at TIMESTAMP NOT NULL,
+  customer_email VARCHAR(255),
+  energy_kj NUMERIC(12,2) NOT NULL DEFAULT 0,
+  calories_kcal NUMERIC(12,2) NOT NULL DEFAULT 0,
+  protein_g NUMERIC(12,2) NOT NULL DEFAULT 0,
+  fat_g NUMERIC(12,2) NOT NULL DEFAULT 0,
+  carb_g NUMERIC(12,2) NOT NULL DEFAULT 0,
+  sugars_g NUMERIC(12,2) NOT NULL DEFAULT 0,
+  sodium_mg NUMERIC(12,2) NOT NULL DEFAULT 0
+);
+
+-- order items
+CREATE TABLE IF NOT EXISTS order_items (
+  id SERIAL PRIMARY KEY,
+  order_id INTEGER NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  afcd_code VARCHAR(32),
+  grams NUMERIC(12,2) NOT NULL DEFAULT 0,
+  qty INTEGER NOT NULL DEFAULT 1,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
