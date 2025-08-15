@@ -4,23 +4,35 @@
   <meta charset="UTF-8" />
   <title>NutriPOS – Saved Products</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding: 8px; border-bottom: 1px solid #eee; text-align:left; }
-    .btn { padding:6px 10px; border:1px solid #ccc; border-radius:6px; background:#fff; cursor:pointer; }
-    .btn.danger { border-color:#e33; color:#e33; }
-  </style>
 </head>
 <body>
-  <h1>Saved Products</h1>
-  <a href="custom_pos_builder.html" class="btn">+ Create New</a>
+  <!-- Navigation Bar -->
+  <nav class="navbar">
+    <div class="navbar-container">
+      <div class="logo-dashboard"> 
+        <a href="#" class="logo">NutriPOS</a>
+        <span class="admin-dashboard">Admin Dashboard</span>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="custom_pos_builder.html" class="nav-button">Menu Builder</a></li>
+        <li><a href="menu_management.html" class="nav-button active">Menu Management</a></li>
+        <li><a href="order_history.html" class="nav-button">Order History</a></li>
+      </ul>
+      <div class="user-section">
+        <span class="admin">Admin</span>
+        <button class="logout-btn">Logout</button>
+      </div>
+    </div>
+  </nav>
+  <!-- Main Content -->
+  <h2>Menu Management</h2>
+  <p>Manage menu items - Core items sync with POS system</p>
   <table>
-    <thead><tr><th>Name</th><th>Updated</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Menu item</th><th>Updated</th><th>Actions</th></tr></thead>
     <tbody id="list"></tbody>
   </table>
   <script src="custom_pos_builder.js"></script>
   <script src="products.js"></script>
-
   <script>
     listProducts();
   </script>
