@@ -4,25 +4,51 @@
   <meta charset="UTF-8" />
   <title>NutriPOS – Custom Product Builder</title>
   <link rel="stylesheet" href="style.css" />
-
 </head>
 <body>
-  <h1>NutriPOS – Custom Product Builder</h1>
+    <nav class="navbar">
+    <div class="navbar-container">
+      <div class="logo-dashboard"> 
+        <a href="#" class="logo">NutriPOS</a>
+        <span class="admin-dashboard">Admin Dashboard</span>
+      </div>
+      <ul class="navbar-links">
+        <li><a href="custom.html" class="nav-button active">Menu Builder</a></li>
+        <li><a href="products.html" class="nav-button">Menu Management</a></li>
+        <li><a href="order_history.html" class="nav-button">Order History</a></li>
+      </ul>
+      <div class="user-section">
+        <span class="admin">Admin</span>
+        <button class="logout-btn">Logout</button>
+      </div>
+    </div>
+  </nav>
+  <h2>NutriPOS – Custom Product Builder</h2>
+
+
   <div class="flex">
-    <input id="productName" placeholder="Product name e.g. Beef Burger" style="flex:1;padding:8px" />
+    <input id="productName" class="product-name-input" placeholder="Product name e.g. Beef Burger"/>
     <button id="saveBtn" class="btn primary">Save Product</button>
     <a class="btn ghost" href="products.html">View Saved Products</a>
   </div>
   <p class="muted">Type to search AFCD. Suggestions include code, category and nutrients. Click to fill the code automatically.</p>
 
-  <div class="grid" style="font-weight:bold; margin-top:10px">
-    <div>Ingredient Name</div>
-    <div>AFCD Code (optional)</div>
-    <div>Notes</div>
-    <div>Weight (g)</div>
-    <div></div>
-  </div>
-  <div id="ingredients" class="ingredients"></div>
+  <table id="ingredient-table" class="ingredient-table">
+    <thead>
+      <tr>
+        <th>Ingredient Name</th>
+        <th>AFCD Code (optional)</th>
+        <th>Notes</th>
+        <th>Weight (g)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody id="ingredient-list">
+      <!-- Ingredient rows will go here -->
+    </tbody>
+  </table>
+
+  <div class="grid" id="ingredients" class="ingredients"></div>
   <button id="addRow" class="btn ghost" style="margin-top:8px">+ Add Ingredient</button>
   <button id="calcBtn" class="btn primary" style="margin-top:8px">Calculate Nutrition</button>
 

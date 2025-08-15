@@ -155,7 +155,7 @@ th, td {
     background-color: #c02a2a;
 }
 
-/* Content Styling */
+/* Menu management Styling */
 .container {
     width: 90%;
     max-width: 1200px;
@@ -251,6 +251,41 @@ td button:hover {
     color: white;
 }
 
+/* Menu builder styles */
+.product-name-input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px; 
+}
+
+.ingredient-table input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;  /* This creates rounded corners */
+}
+
+.ingredient-table input:focus {
+    border-color: #007bff;
+    outline: none;  /* Remove default outline on focus */
+    border-radius: 12px;  /* Keep the rounded corners on focus */
+}
+.btn.remove.danger {
+    margin-top: 20px;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.3s;
+}
+
+.btn.remove.danger:hover {
+    background-color: #c02a2a;
+}
+
+/* footer */
 footer {
     margin-top: 30px;
     font-size: 12px;
