@@ -60,6 +60,92 @@
                 }
             ],
             "updated_at": "2025-08-12T02:41:07+00:00"
+        },
+        {
+            "id": "6d62911b9563e1cb",
+            "name": "Complete Beef Burger",
+            "ingredients": [
+                {
+                    "name": "Beef, all cuts, separable fat, cooked, no added fat",
+                    "afcd_code": "F000472",
+                    "notes": "",
+                    "grams": 120
+                },
+                {
+                    "name": "Bread roll, mixed grain",
+                    "afcd_code": "F001365",
+                    "notes": "",
+                    "grams": 80
+                },
+                {
+                    "name": "Tomato, cherry, raw",
+                    "afcd_code": "F009190",
+                    "notes": "",
+                    "grams": 30
+                },
+                {
+                    "name": "Sauce, barbecue, commercial",
+                    "afcd_code": "F007987",
+                    "notes": "",
+                    "grams": 15
+                },
+                {
+                    "name": "Mayonnaise, traditional (greater than 65% fat), commercial",
+                    "afcd_code": "F005441",
+                    "notes": "",
+                    "grams": 20
+                },
+                {
+                    "name": "Cheese, cheddar, natural, regular fat",
+                    "afcd_code": "F002414",
+                    "notes": "",
+                    "grams": 30
+                }
+            ],
+            "updated_at": "2025-08-14T08:20:07+00:00"
+        },
+        {
+            "id": "3362df30d6d0aeba",
+            "name": "Chicken Burger",
+            "ingredients": [
+                {
+                    "name": "Chicken, breast, lean flesh, baked, no added fat",
+                    "afcd_code": "F002590",
+                    "notes": "",
+                    "grams": 120
+                },
+                {
+                    "name": "Hamburger Bun",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 80
+                },
+                {
+                    "name": "Tomato",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 30
+                },
+                {
+                    "name": "BBQ Sauce",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 15
+                },
+                {
+                    "name": "Mayonnaise",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 20
+                },
+                {
+                    "name": "Cheddar Cheese",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 30
+                }
+            ],
+            "updated_at": "2025-08-14T08:22:57+00:00"
         }
     ]
 }
