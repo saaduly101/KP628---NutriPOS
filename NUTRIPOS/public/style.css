@@ -1,2 +1,306 @@
-body{font-family:system-ui,Arial,sans-serif;max-width:960px;margin:24px auto;padding:0 16px}
-h1{margin-bottom:8px}
+body {
+    font-family: system-ui, Arial, sans-serif;
+    max-width: 960px;
+    margin: 24px auto;
+    padding: 0 16px;
+    background-color: #f8f9fa;
+}
+h1, h2, h3 {
+    margin-top: 80px;
+    margin-bottom: 8px;
+    color: #333;
+    font-size: 24px;
+}
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+th, td {
+    padding: 8px;
+    border-bottom: 1px solid #eee;
+    text-align: left;
+}
+/* ADDED THIS */
+tbody {
+    text-align: left;
+    width: 100%;
+}
+
+.btn {
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background: #fff;
+    cursor: pointer;
+}
+.btn.danger {
+    border-color: #e33;
+    color: #e33;
+}
+
+.btn.danger:hover {
+    background-color: #e33; 
+    color: white; 
+}
+
+/* logo dashboard */
+.logo-dashboard {
+    display: flex;
+    align-items: center;
+}
+
+.admin-dashboard {
+    color: #6B7280;
+    margin-left: 15px;
+    font-size: 16px;
+    font-weight: thin;
+}
+
+/* nav section */
+.navbar {
+    background-color: #fff;
+    border-bottom: 1px solid #eee;
+    color: white;
+    padding: 10px 0;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+
+.navbar-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+}
+
+.navbar .logo {
+    font-size: 28px;
+    font-weight: thin;
+    color: #2563EB;
+    text-decoration: none;
+}
+
+.navbar {
+    font-size: 18px;
+    font-weight: normal;
+     color:  #6B7280;
+    margin-left: 10px; 
+}
+
+.navbar-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-links li {
+    margin-left: 20px;
+}
+
+.navbar-links li a {
+    color: #4B5563;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: bold;
+    transition: color 0.56s;
+}
+
+.navbar-links li a:hover,
+.navbar-links li a.active {
+    color: #1D4ED8; 
+    font-weight: bold;
+}
+
+/* Nav buttons styling */
+.nav-button {
+    padding: 10px 20px;
+    color: #4B5563;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+    text-decoration: none;
+    transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.nav-button:hover {
+    background-color: #DBEAFE;
+}
+
+.nav-button.active {
+    background-color: #DBEAFE;
+    transform: scale(1.05);
+}
+
+/* User Section */
+.user-section {
+    display: flex;
+    align-items: center;
+}
+
+.admin {
+    color: #6B7280;
+    margin-right: 15px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.logout-btn {
+    background-color: #e33;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #c02a2a;
+}
+
+/* Menu management Styling */
+.container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 80px auto 0;
+    padding: 20px;
+}
+
+h1 {
+    margin-bottom: 8px;
+    text-align: center;
+    color: #333;
+    font-size: 2rem;
+}
+
+.description {
+    text-align: center;
+    color: #777;
+    margin-bottom: 20px;
+}
+
+.btn {
+    padding: 10px 20px;
+    color: #4B5563;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 20px;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #DBEAFE;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 30px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th {
+    color: #6B7280;
+    padding: 12px;
+    font-size: 16px;
+    text-align: left;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #f2f2f2;
+    font-size: 14px;
+}
+
+td a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+td button {
+    background-color: #e33;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+
+td button:hover {
+    background-color: #c02a2a;
+}
+
+.status {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.status-linked {
+    background-color: #28a745;
+    color: white;
+}
+
+.status-not-linked {
+    background-color: #e33;
+    color: white;
+}
+
+/* Menu builder styles */
+.product-name-input {
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px; 
+}
+/* Changed name from ingredients... to grid */
+.grid input {
+    width: 100%;
+    padding: 8px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 12px;  /* This creates rounded corners */
+}
+
+.grid input:focus {
+    border-color: #007bff;
+    outline: none;  /* Remove default outline on focus */
+    border-radius: 12px;  /* Keep the rounded corners on focus */
+}
+.btn.remove.danger {
+    margin-top: 20px;
+    border: none;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.3s;
+}
+
+.btn.remove.danger:hover {
+    background-color: #c02a2a;
+}
+
+/* footer */
+footer {
+    margin-top: 30px;
+    font-size: 12px;
+    text-align: center;
+    color: #555;
+}
+
+footer p {
+    margin: 0;
+}
+
+
