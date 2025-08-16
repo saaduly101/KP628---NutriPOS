@@ -101,7 +101,7 @@ async function listProducts(){
       <td>${p.name}</td>
       <td>${new Date(p.updated_at).toLocaleString()}</td>
       <td>
-        <a class="btn" href="custom.html#${p.id}">Edit</a>
+        <a class="btn" href="custom_pos_builder.html#${p.id}">Edit</a>
         <button class="btn danger" data-id="${p.id}">Delete</button>
       </td>`;
     tr.querySelector('button').onclick = async (e)=>{
@@ -179,20 +179,10 @@ async function calculate(){
   new QRCode(document.getElementById('qrcode'), JSON.stringify({name: document.getElementById('productName').value, totals: t}));
 }
 
-function addRow(data){ 
-  const tableBody = document.getElementById('ingredient-list');
-  const newRow = document.createElement('tr');
+// function addRow(data){ document.getElementById('ingredients').appendChild(rowTemplate(data)); }
 
-  newRow.innerHTML = `
-    <td><input type="text" placeholder="Ingredient Name" class="name" value="${data.name || ''}" /></td>
-    <td><input type="text" placeholder="AFCD Code (optional)" class="code" value="${data.afcd_code || ''}" /></td>
-    <td><input type="text" placeholder="Notes" class="notes" value="${data.notes || ''}" /></td>
-    <td><input type="number" placeholder="Weight (g)" class="grams" value="${data.grams || 0}" /></td>
-    <td><button class="btn remove danger">Remove</button></td>
-  `;
-
-  tableBody.appendChild(newRow);
-  newRow.querySelector('.remove').onclick = ()=> newRow.remove();
+function addRow(data = {}) {
+  document.querySelector('#ingredients').appendChild(rowTemplate(data));
 }
 
 document.addEventListener('DOMContentLoaded', async ()=>{
