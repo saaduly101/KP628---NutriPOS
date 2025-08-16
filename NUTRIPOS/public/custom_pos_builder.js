@@ -34,7 +34,11 @@ function rowTemplate(data = {}) {
 
   const debounce = (fn, d = 200) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), d); }; };
   const closeList = () => { list.style.display = 'none'; list.innerHTML = ''; currentIndex = -1; currentResults = []; };
-  const openList  = () => { list.style.display = 'block'; };
+  const openList  = () => { 
+    list.style.display = 'block'; 
+    list.style.position = 'absolute';
+    list.style.zIndex = 9999;
+  };
 
   const highlight = (text, query) => {
     const q = query.trim();
@@ -58,14 +62,14 @@ function rowTemplate(data = {}) {
       div.className = 'ac-item';
       div.setAttribute('data-index', idx);
       div.innerHTML = `
-        <div>
+        <div class="ac-info">
           <div class="ac-name">${highlight(it.name, query)}</div>
-          <div class="ac-meta">
-            Code: <span class="pill">${it.code}</span> • ${it.energy_kj} kJ/100g • Prot ${it.protein_g}g • Fat ${it.fat_g}g • Carb ${it.carb_g}g
+          <div class="ac-meta"> Code: <span class="pill">${it.code}</span>
+          <div class="ac-meta">• ${it.energy_kj} kJ/100g • Prot ${it.protein_g}g • Fat ${it.fat_g}g • Carb ${it.carb_g}g</div>
           </div>
           ${it.tags && it.tags.length ? `<div class="ac-meta">Tags: ${it.tags.map(t=>`<span class="pill">${t}</span>`).join(' ')}</div>` : ''}
         </div>
-        <div class="ac-meta">${it.category || ''}</div>
+        <div class="ac-meta digit">${it.category || ''}</div>
       `;
       div.onclick = () => onPick(it);
       list.appendChild(div);
