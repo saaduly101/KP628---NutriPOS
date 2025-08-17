@@ -33,11 +33,16 @@ function rowTemplate(data = {}) {
   let currentResults = [];
 
   const debounce = (fn, d = 200) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), d); }; };
-  const closeList = () => { list.style.display = 'none'; list.innerHTML = ''; currentIndex = -1; currentResults = []; };
+  const closeList = () => { 
+    list.style.display = 'none'; 
+    list.innerHTML = ''; 
+    currentIndex = -1; 
+    currentResults = []; 
+    list.closest('.ac-wrap').classList.remove('ac-active');
+  };
   const openList  = () => { 
     list.style.display = 'block'; 
-    list.style.position = 'absolute';
-    list.style.zIndex = 9999;
+    list.closest('.ac-wrap').classList.add('ac-active');
   };
 
   const highlight = (text, query) => {

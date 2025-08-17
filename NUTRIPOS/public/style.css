@@ -311,12 +311,42 @@ footer p {
 
 
 /*  Autocomplete CSS */
-table .grid.under {
-    overflow: visible;
+table {
+    width: 100%;
+    border-collapse: collapse;
+    overflow: visible !important;
+}
+
+th, td {
+    border-bottom: 1px solid #eee;
+    text-align: left;
+    overflow: visible !important;
+    position: relative;
+}
+
+tbody {
+    text-align: left;
+    width: 100%;
+    overflow: visible !important;
+}
+
+.grid.under {
+    position: relative;
+    z-index: 1;
+}
+
+.ac-wrap:has(.ac-list[style*="block"]) {
+    z-index: 1002 !important;
+}
+
+.ac-wrap.ac-active {
+  z-index: 1002 !important;
 }
 
 .ac-wrap { 
-    position: static;
+    position: relative; 
+    width: 100%;
+    z-index: 1;
 }
 
 .ac-wrap:has(input:focus) .ac-list {
@@ -333,19 +363,20 @@ table .grid.under {
 
 /* The dropdown */
 .ac-list {
-    position: fixed; 
-    top: auto; 
-    left: 270px; 
-    z-index: 99999; 
-    background-color: white; 
-    border: 1px solid #ddd; 
-    border-radius: 10px; 
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08); 
-    max-height: 320px; 
-    overflow: auto; 
-    display: none; 
-    width: 30%;
-
+    position: absolute; 
+    top: calc(100% + 2px); 
+    left: 0; 
+    right: 0; 
+    width: 100%; 
+    z-index: 1003 !important;
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.08);
+    max-height: 320px;
+    overflow: auto;
+    display: none;
+    width: 200%;
 }
 
 /* Optional header row for context */
