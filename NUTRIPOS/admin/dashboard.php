@@ -28,9 +28,6 @@ auth_require_admin();
     </nav>
 
     <h1>Admin Dashboard</h1>
-    <p>Welcome, <?php echo htmlspecialchars($_SESSION['email']); ?> | <a href="logout.php">Logout</a></p>
-    <ul>
-      <li><a href="orders.php">View Orders</a></li>
-    </ul>
+    <h1>Welcome, <?php echo htmlspecialchars($_SESSION['email']); ?></h1>
   </body>
 </html>
