@@ -146,6 +146,31 @@
                 }
             ],
             "updated_at": "2025-08-14T08:22:57+00:00"
+        },
+        {
+            "id": "10c92a1cc5b3f0cb",
+            "name": "Starbuck hot cocoa",
+            "ingredients": [
+                {
+                    "name": "Cocoa powder",
+                    "afcd_code": "F002980",
+                    "notes": "",
+                    "grams": 250
+                },
+                {
+                    "name": "Water, bottled, still",
+                    "afcd_code": "F009516",
+                    "notes": "",
+                    "grams": 500
+                },
+                {
+                    "name": "Sugar, brown",
+                    "afcd_code": "F008969",
+                    "notes": "",
+                    "grams": 20
+                }
+            ],
+            "updated_at": "2025-08-16T07:03:46+00:00"
         }
     ]
 }
