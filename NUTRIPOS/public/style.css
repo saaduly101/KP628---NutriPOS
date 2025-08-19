@@ -10,7 +10,7 @@ body {
 body::before{
     content: "";
     position: fixed; inset: 0;
-    background: url("../assets/nutr-bg.jpg") repeat;
+    background: url("../assets/nutr-bg.jpg") repeat;   /* REFERENCE: https://www.istockphoto.com/vector/food-background-vegetables-seamless-pattern-healthy-eating-tomato-garlic-carrot-gm1198380802-342470297 */
     background-size: 420px 420px;   /* scale */
     opacity: .2;                   /* fade strength */
     pointer-events: none;           /* don’t block clicks */
