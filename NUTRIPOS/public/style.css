@@ -5,6 +5,19 @@ body {
     padding: 0 16px;
     background-color: #f8f9fa;
 }
+
+/* ADDED BACKGROUND IMAGE */
+body::before{
+    content: "";
+    position: fixed; inset: 0;
+    background: url("../assets/nutr-bg.jpg") repeat;
+    background-size: 420px 420px;   /* scale */
+    opacity: .2;                   /* fade strength */
+    pointer-events: none;           /* don’t block clicks */
+    z-index: -1;                    /* sit behind content */
+  }
+
+
 h1, h2, h3 {
     margin-top: 80px;
     margin-bottom: 8px;
