@@ -5,15 +5,31 @@ auth_require_admin();
 ?>
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8" />
-  <title>NutriPOS – Orders</title>
-  
-</head>
+  <head>
+    <meta charset="utf-8"/>
+    <title>Admin - Orders</title>
+    <link rel="stylesheet" href="../public/style.css" />
+  </head>
 <body>
-  <h1>Orders</h1>
+  <nav class="navbar">
+      <div class="navbar-container">
+        <div class="logo-dashboard"> 
+          <a href="#" class="logo">NutriPOS</a>
+          <span class="admin-dashboard">Admin Dashboard</span>
+        </div>
+        <ul class="navbar-links">
+          <li><a href="dashboard.php" class="nav-button">Dashboard</a></li>
+          <li><a href="orders.php" class="nav-button active">Order History</a></li>
+        </ul>
+        <div class="user-section">
+          <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
+          <a href="logout.php"><button class="logout-btn">Logout</button></a>
+        </div>
+      </div>
+    </nav>
+
+  <h2>Order History</h2>
   <div class="toolbar">
-    <a href="dashboard.php">← Back to Dashboard</a>
     <span class="pill" id="count">Loading…</span>
   </div>
 
