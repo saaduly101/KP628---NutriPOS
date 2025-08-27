@@ -71,7 +71,7 @@ if (hash_equals($computed, $signatureHeader)) {
     if ($orderState != "COMPLETED") {
         return;
     } else {
-    //     file_put_contents("square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
+        // file_put_contents("square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
 
         $response = $client->orders->get(
             new GetOrdersRequest([
