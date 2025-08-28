@@ -9,8 +9,6 @@ use Square\Orders\Requests\GetOrdersRequest;
 use Dotenv\Dotenv;
 
 function cleanSquareAPIOrderUpdatedResponse($response) {
-    $response = json_decode($response, true);
-
     $order_removeKeys = array('state', 'location_id', 'source', 'customer_id', 'taxes', 'net_amounts', 'tenders', 'version', 'created_at', 'updated_at', 'total_money', 'total_tax_money', 'total_discount_money', 'total_tip_money', 'total_service_charge_money', 'net_amount_due_money');
     $lineitems_removeKeys = array('uid', 'catalog_version', 'note', 'item_type', 'applied_taxes', 'base_price_money', 'variation_total_price_money', 'gross_sales_money', 'total_tax_money', 'total_discount_money', 'total_money', 'total_service_charge_money');
     $modifiers_removeKeys = array('uid', 'catalog_version', 'base_price_money', 'total_price_money');
@@ -32,8 +30,6 @@ function cleanSquareAPIOrderUpdatedResponse($response) {
             }
         }
     }
-
-    $response = json_encode($response, JSON_PRETTY_PRINT);
     
     return $response;
 }
@@ -87,8 +83,10 @@ if (hash_equals($computed, $signatureHeader)) {
             ]),
         );
 
+        $response = json_decode($response, true);
         $response = cleanSquareAPIOrderUpdatedResponse($response);
 
+        $response = json_encode($response, JSON_PRETTY_PRINT);
         file_put_contents("responses/square_response".date("his").".json", "$response\n");
     }
 } else {
