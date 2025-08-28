@@ -42,9 +42,11 @@ function cleanSquareAPIOrderUpdatedResponse($response) {
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
+$squareEnvironment = $_ENV['SQUARE_ENVIRONMENT'] === 'PRODUCTION' ? Environments::Production : Environments::Sandbox;
+
 $client = new SquareClient(
     token: $_ENV['SQUARE_ACCESS_TOKEN'],
-    options: ['baseUrl' => Environments::Sandbox->value // Used by default
+    options: ['baseUrl' => $squareEnvironment->value // Used by default
     ]
 );
 
@@ -52,6 +54,9 @@ $signatureKey    = $_ENV["SQUARE_WEBHOOK_SIGNATURE_KEY"];
 $notificationUrl = $_ENV["SQUARE_NOTIFICATION_URL"];
 $signatureHeader = $_SERVER['HTTP_X_SQUARE_HMACSHA256_SIGNATURE'] ?? '';
 $rawBody         = file_get_contents('php://input');
+
+// Testing
+// file_put_contents("square_payload".date("his").".json", "$rawBody\n");
 
 // Build payload exactly as Square signs it
 $payload = $notificationUrl . $rawBody;
@@ -71,7 +76,7 @@ if (hash_equals($computed, $signatureHeader)) {
     if ($orderState != "COMPLETED") {
         return;
     } else {
-        // file_put_contents("square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
+        file_put_contents("square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
 
         $response = $client->orders->get(
             new GetOrdersRequest([
@@ -81,7 +86,7 @@ if (hash_equals($computed, $signatureHeader)) {
 
         $response = cleanSquareAPIOrderUpdatedResponse($response);
 
-        file_put_contents("square_response.json", "$response\n");
+        file_put_contents("square_response".date("his").".json", "$response\n");
     }
 } else {
     http_response_code(403);
