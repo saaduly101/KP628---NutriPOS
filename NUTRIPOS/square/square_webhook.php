@@ -44,19 +44,22 @@ $dotenv->load();
 
 $squareEnvironment = $_ENV['SQUARE_ENVIRONMENT'] === 'PRODUCTION' ? Environments::Production : Environments::Sandbox;
 
+$squareAccessToken = $squareEnvironment === Environments::Production ? $_ENV['SQUARE_ACCESS_TOKEN'] : $_ENV['SQUARE_ACCESS_TOKEN_SANDBOX'];
+$squareWebhookSignatureKey = $squareEnvironment === Environments::Production ? $_ENV['SQUARE_WEBHOOK_SIGNATURE_KEY'] : $_ENV['SQUARE_WEBHOOK_SIGNATURE_KEY_SANDBOX'];
+
 $client = new SquareClient(
-    token: $_ENV['SQUARE_ACCESS_TOKEN'],
+    token: $squareAccessToken,
     options: ['baseUrl' => $squareEnvironment->value // Used by default
     ]
 );
 
-$signatureKey    = $_ENV["SQUARE_WEBHOOK_SIGNATURE_KEY"];
+$signatureKey    = $squareWebhookSignatureKey;
 $notificationUrl = $_ENV["SQUARE_NOTIFICATION_URL"];
 $signatureHeader = $_SERVER['HTTP_X_SQUARE_HMACSHA256_SIGNATURE'] ?? '';
 $rawBody         = file_get_contents('php://input');
 
 // Testing
-// file_put_contents("square_payload".date("his").".json", "$rawBody\n");
+// file_put_contents("responses/square_payload".date("his").".json", "$rawBody\n");
 
 // Build payload exactly as Square signs it
 $payload = $notificationUrl . $rawBody;
@@ -73,11 +76,11 @@ if (hash_equals($computed, $signatureHeader)) {
     $orderId = $webhook_data['data']['object']['order_updated']['order_id'];
     $orderState = $webhook_data['data']['object']['order_updated']['state'];
 
+    file_put_contents("responses/square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
+
     if ($orderState != "COMPLETED") {
         return;
     } else {
-        file_put_contents("square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
-
         $response = $client->orders->get(
             new GetOrdersRequest([
                 'orderId' => $orderId,
@@ -86,7 +89,7 @@ if (hash_equals($computed, $signatureHeader)) {
 
         $response = cleanSquareAPIOrderUpdatedResponse($response);
 
-        file_put_contents("square_response".date("his").".json", "$response\n");
+        file_put_contents("responses/square_response".date("his").".json", "$response\n");
     }
 } else {
     http_response_code(403);
