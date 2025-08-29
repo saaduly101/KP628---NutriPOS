@@ -9,7 +9,7 @@ use Square\Orders\Requests\GetOrdersRequest;
 use Dotenv\Dotenv;
 
 function cleanSquareAPIOrderUpdatedResponse($response) {
-    $order_removeKeys = array('state', 'location_id', 'source', 'customer_id', 'taxes', 'net_amounts', 'tenders', 'version', 'created_at', 'updated_at', 'total_money', 'total_tax_money', 'total_discount_money', 'total_tip_money', 'total_service_charge_money', 'net_amount_due_money');
+    $order_removeKeys = array('state', 'location_id', 'source', 'customer_id', 'taxes', 'net_amounts', 'tenders', 'version', 'created_at', 'updated_at', 'total_tax_money', 'total_discount_money', 'total_tip_money', 'total_service_charge_money', 'net_amount_due_money');
     $lineitems_removeKeys = array('uid', 'catalog_version', 'note', 'item_type', 'applied_taxes', 'base_price_money', 'variation_total_price_money', 'gross_sales_money', 'total_tax_money', 'total_discount_money', 'total_money', 'total_service_charge_money');
     $modifiers_removeKeys = array('uid', 'catalog_version', 'base_price_money', 'total_price_money');
 
@@ -54,9 +54,6 @@ $notificationUrl = $_ENV["SQUARE_NOTIFICATION_URL"];
 $signatureHeader = $_SERVER['HTTP_X_SQUARE_HMACSHA256_SIGNATURE'] ?? '';
 $rawBody         = file_get_contents('php://input');
 
-// Testing
-// file_put_contents("responses/square_payload".date("his").".json", "$rawBody\n");
-
 // Build payload exactly as Square signs it
 $payload = $notificationUrl . $rawBody;
 
@@ -72,22 +69,54 @@ if (hash_equals($computed, $signatureHeader)) {
     $orderId = $webhook_data['data']['object']['order_updated']['order_id'];
     $orderState = $webhook_data['data']['object']['order_updated']['state'];
 
-    file_put_contents("responses/square_orders.txt", "Order Completed: $orderId\n", FILE_APPEND);
+    file_put_contents("responses/square_orders.txt", "$orderId\n", FILE_APPEND);
 
     if ($orderState != "COMPLETED") {
         return;
     } else {
+        // Create Database Connection
+        $conn = mysqli_connect($_ENV['DB_SERVERNAME'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
+
+        // Check Database Connection
+        if (!$conn) {
+            die("Connection failed: " . mysqli_connect_error());
+        }
+
         $response = $client->orders->get(
             new GetOrdersRequest([
                 'orderId' => $orderId,
             ]),
         );
 
+        // file_put_contents("responses/square_FULL_response".date("his").".json", "$response\n");
+
         $response = json_decode($response, true);
         $response = cleanSquareAPIOrderUpdatedResponse($response);
 
+        // Setting Order Value and Currency to display correctly
+        $fmt = new NumberFormatter($_ENV['LOCALE'], NumberFormatter::CURRENCY);
+        $orderValue = $response['order']['total_money']['amount'] ?? 0;
+        $orderCurrency = $response['order']['total_money']['currency'] ?? "AUD";
+        $orderCurrencyValue = $fmt->formatCurrency($orderValue / 100, $orderCurrency);
+
+        // Setting Order Time to display correctly
+        $orderTime = $response['order']['closed_at'];
+        $orderTime = new DateTime($orderTime, new DateTimeZone("UTC"));
+        $orderTime->setTimezone(new DateTimeZone(date_default_timezone_get()));
+        $orderLocalTime = $orderTime->format(DateTime::ATOM);
+
+        $sql = "INSERT INTO orders (id, `Timestamp`, Value) 
+        VALUES ('" . $response['order']['id'] . "', '" . $orderLocalTime . "', '" . $orderCurrencyValue . "')";
+        
+        // if ($conn->query($sql) === TRUE) {
+        //     echo "New record created successfully";
+        // } else {
+        //     echo "Error: " . $sql . "<br>" . $conn->error;
+        // }
+
         $response = json_encode($response, JSON_PRETTY_PRINT);
-        file_put_contents("responses/square_response".date("his").".json", "$response\n");
+
+        file_put_contents("responses/square_response_".date("Ymd_His_T").".json", "$response\n");
     }
 } else {
     http_response_code(403);
