@@ -108,11 +108,11 @@ if (hash_equals($computed, $signatureHeader)) {
         $sql = "INSERT INTO orders (id, `Timestamp`, Value) 
         VALUES ('" . $response['order']['id'] . "', '" . $orderLocalTime . "', '" . $orderCurrencyValue . "')";
         
-        // if ($conn->query($sql) === TRUE) {
-        //     echo "New record created successfully";
-        // } else {
-        //     echo "Error: " . $sql . "<br>" . $conn->error;
-        // }
+        if ($conn->query($sql) === TRUE) {
+            echo "New record created successfully";
+        } else {
+            echo "Error: " . $sql . "<br>" . $conn->error;
+        }
 
         $response = json_encode($response, JSON_PRETTY_PRINT);
 
