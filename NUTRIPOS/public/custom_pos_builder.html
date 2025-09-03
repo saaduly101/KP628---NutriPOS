@@ -18,7 +18,7 @@
       <ul class="navbar-links">
         <li><a href="custom.html" class="nav-button active">Menu Builder</a></li>
         <li><a href="products.html" class="nav-button">Menu Management</a></li>
-        <li><a href="order_history.html" class="nav-button">Order History</a></li>
+        <li><a href="../admin/orders.php" class="nav-button">Order History</a></li>
       </ul>
       <div class="user-section">
         <span class="admin">Admin</span>
@@ -69,24 +69,54 @@
     <span class="muted">Tip: leave AFCD code empty and just type names—we’ll smart-match.</span>
   </div>
 
-  <div id="result" class="totals" style="display:none"></div>
-  <div id="qrcode"></div>
+    <div id="qrcode"></div>
 
+  <div id="result" class="totals" style="display:none"></div>
   <div class="hr"></div>
+  
 
   <h2>POS Simulator (no payment)</h2>
   <p>Add customer email (optional) and “Create Order” to save, get a receipt link & QR. You can also email the receipt.</p>
 
+  
   <div class="flex">
     <label for="custEmail" class="muted">Customer Email (optional):</label>
     <input id="custEmail" value="customer@example.com" placeholder="customer@example.com" style="flex:1;padding:8px"/>
     <button id="createOrderBtn" class="btn primary">Create Order</button>
   </div>
+  
 
   <div id="orderResult" style="margin-top:12px"></div>
 
-  <script src="qr-code.min.js"></script>
+  <script src="qrcode.js"></script>
   <script src="custom_pos_builder.js"></script>
+
+  <script>
+function generateNutritionQR(totals){
+  // Stringify nicely for scanning
+  const payload = `
+  Energy: ${totals["Energy (kJ)"]} kJ (${totals["Calories (kcal)"]} kcal)
+  Protein: ${totals["Protein (g)"]} g
+  Fat: ${totals["Fat (g)"]} g
+  Carbohydrate: ${totals["Carbohydrate (g)"]} g
+  Sugars: ${totals["Sugars (g)"]} g
+  Sodium: ${totals["Sodium (mg)"]} mg
+  `;
+}
+
+// Example usage after calculating:
+const totals = {
+  "Energy (kJ)": 4221.7,
+  "Calories (kcal)": 1009.0,
+  "Protein (g)": 35.91,
+  "Fat (g)": 84.43,
+  "Carbohydrate (g)": 27.29,
+  "Sugars (g)": 12.04,
+  "Sodium (mg)": 836
+};
+generateNutritionQR(totals);
+
+</script>
 
 </body>
 </html>

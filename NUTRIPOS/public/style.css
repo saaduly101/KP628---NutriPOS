@@ -17,6 +17,11 @@ body::before{
     z-index: -1;                    /* sit behind content */
   }
 
+  #qrcode {
+  width:160px;
+  height:160px;
+  margin-top:15px;
+}
 
 h1, h2, h3 {
     margin-top: 80px;

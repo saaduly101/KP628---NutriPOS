@@ -151,9 +151,7 @@ async function calculate(){
     </ul>
     <div class="muted">Matched: ${data.matches.join(', ')||'—'}</div>
   `;
-  // Optional page-level QR for the product (not the receipt)
-  $('#qrcode').innerHTML = '';
-  new QRCode($('#qrcode'), JSON.stringify({name: $('#productName').value, totals: t}));
+  
 }
 
 async function saveProduct(){
@@ -204,7 +202,15 @@ async function createOrder(){
     headers:{'Content-Type':'application/json'},
     body: JSON.stringify({ customer_email, items })
   });
-  const data = await res.json();
+
+  const raw = await res.text();
+  let data;
+  try { data = JSON.parse(raw); }
+  catch { 
+    $('#orderResult').innerHTML = `<div style="color:#c00">Invalid JSON from orders_create.php</div>`;
+    console.error('orders_create.php raw:', raw);
+    return;
+  }
 
   const el = $('#orderResult');
   if (data.error){
@@ -213,7 +219,19 @@ async function createOrder(){
   }
 
   const id = data.order_id;
-  const t = data.totals;
+  const t = data.totals || {};
+
+  // Build human-friendly QR payload (great for phone scanners)
+  const payload = [
+    `NutriPOS #${id}`,
+    `Energy: ${Number(t["Energy (kJ)"]||0).toFixed(1)} kJ (${Number(t["Calories (kcal)"]||0).toFixed(1)} kcal)`,
+    `Protein: ${Number(t["Protein (g)"]||0).toFixed(2)} g`,
+    `Fat: ${Number(t["Fat (g)"]||0).toFixed(2)} g`,
+    `Carb: ${Number(t["Carbohydrate (g)"]||0).toFixed(2)} g`,
+    `Sugars: ${Number(t["Sugars (g)"]||0).toFixed(2)} g`,
+    `Sodium: ${Number(t["Sodium (mg)"]||0).toFixed(0)} mg`
+  ].join('\n');
+
   el.innerHTML = `
     <h3>Order #${id} created</h3>
     <ul>
@@ -224,15 +242,55 @@ async function createOrder(){
       <li>Sugars: ${t["Sugars (g)"]} g</li>
       <li>Sodium: ${t["Sodium (mg)"]} mg</li>
     </ul>
-    <p><a href="receipt.html?id=${id}" target="_blank" class="btn ghost">Open receipt (QR)</a></p>
-    <div id="emailBlock" class="flex">
+    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
+      <p style="margin:0"><a href="receipt.html?id=${id}" target="_blank" class="btn ghost">Open receipt (QR)</a></p>
+
+    </div>
+    <div id="emailBlock" class="flex" style="margin-top:10px">
       <input id="emailTo" placeholder="customer@example.com" style="flex:1;padding:8px" value="${customer_email||''}">
       <button id="emailBtn" class="btn">Email Receipt</button>
       <span id="emailStatus" class="muted"></span>
     </div>
-  `;
 
-  // email button
+`;
+
+
+function makeCode () {		
+
+  // Clear old QR
+  document.getElementById('qrcode').innerHTML = '';
+
+  // Generate new QR
+  var text = "http://localhost/NutriPOS/NutriPOS/KP628---NutriPOS/NUTRIPOS/public/receipt.html?id=";
+  var link = text + id
+  alert(link)
+	// qrcode.makeCode(link);
+
+  new QRCode(document.getElementById("qrcode"), {
+    text: link,
+    width: 256,
+    height: 256
+  });
+
+  
+}
+
+
+makeCode();
+
+$("#text").
+  on("blur", function () {
+    makeCode();
+  }).
+  on("keydown", function (e) {
+    if (e.keyCode == 13) {
+      makeCode();
+    }
+  })
+
+
+
+  // Email button
   const btn = $('#emailBtn');
   if (btn){
     btn.onclick = async ()=>{
@@ -242,14 +300,14 @@ async function createOrder(){
       fd.append('order_id', String(id));
       fd.append('to', to);
       const res2 = await fetch('../backend/email_receipt.php', { method:'POST', body: fd });
-      let r, msg = 'Send failed';
-      try { r = await res2.json(); } catch(e){}
+      let r; try { r = await res2.json(); } catch(e){}
       const st = $('#emailStatus');
       if (r && r.ok){ st.textContent = 'Sent ✔'; st.style.color = 'green'; }
-      else { st.textContent = (r && r.error) ? r.error : msg; st.style.color = 'red'; }
+      else { st.textContent = (r && r.error) ? r.error : 'Send failed'; st.style.color = 'red'; }
     };
   }
 }
+
 
 // --- boot ---
 document.addEventListener('DOMContentLoaded', async ()=>{
@@ -273,3 +331,5 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     addRow({name:'Cheddar Cheese', grams:30});
   }
 });
+
+

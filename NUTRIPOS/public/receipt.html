@@ -101,6 +101,23 @@
           tb.appendChild(tr);
         });
       }
+
+    const payload = [
+  `NutriPOS #${o.id}`,
+  `Energy: ${o.energy_kj} kJ (${o.calories_kcal} kcal)`,
+  `Protein: ${o.protein_g} g`,
+  `Fat: ${o.fat_g} g`,
+  `Carb: ${o.carb_g} g`,
+  `Sugars: ${o.sugars_g} g`,
+  `Sodium: ${o.sodium_mg} mg`
+].join('\n');
+
+new QRCode(document.getElementById('qrcode'), {
+  text: payload,
+  width: 196,
+  height: 196
+});
+
     }
 
     load();
