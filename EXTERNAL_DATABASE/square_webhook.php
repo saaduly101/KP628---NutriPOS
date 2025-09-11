@@ -38,6 +38,9 @@ function cleanSquareAPIOrderUpdatedResponse($response) {
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
 $dotenv->load();
 
+// Sets Timezone
+date_default_timezone_set($_ENV["TIMEZONE"]);
+
 $squareEnvironment = $_ENV['SQUARE_ENVIRONMENT'] === 'PRODUCTION' ? Environments::Production : Environments::Sandbox;
 
 $squareAccessToken = $squareEnvironment === Environments::Production ? $_ENV['SQUARE_ACCESS_TOKEN'] : $_ENV['SQUARE_ACCESS_TOKEN_SANDBOX'];
@@ -69,8 +72,6 @@ if (hash_equals($computed, $signatureHeader)) {
     $orderId = $webhook_data['data']['object']['order_updated']['order_id'];
     $orderState = $webhook_data['data']['object']['order_updated']['state'];
 
-    file_put_contents("responses/square_orders.txt", "$orderId\n", FILE_APPEND);
-
     if ($orderState != "COMPLETED") {
         return;
     } else {
@@ -87,8 +88,6 @@ if (hash_equals($computed, $signatureHeader)) {
                 'orderId' => $orderId,
             ]),
         );
-
-        // file_put_contents("responses/square_FULL_response".date("his").".json", "$response\n");
 
         $response = json_decode($response, true);
         $response = cleanSquareAPIOrderUpdatedResponse($response);
@@ -115,10 +114,10 @@ if (hash_equals($computed, $signatureHeader)) {
         }
 
         $response = json_encode($response, JSON_PRETTY_PRINT);
-
-        file_put_contents("responses/square_response_".date("Ymd_His_T").".json", "$response\n");
     }
 } else {
+	// header("HTTP/1.1 403 Forbidden");
+	// exit("403 Forbidden - You don't have permission to access this resource.");
     http_response_code(403);
 }
 
