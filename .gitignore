@@ -1,0 +1,3 @@
+.env
+/vendor/
+/EXTERNAL_DATABASE/responses/
