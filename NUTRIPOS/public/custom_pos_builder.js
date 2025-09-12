@@ -246,13 +246,46 @@ async function createOrder(){
       <p style="margin:0"><a href="receipt.html?id=${id}" target="_blank" class="btn ghost">Open receipt (QR)</a></p>
 
     </div>
+    <form method = "post" action = "../backend/email_receipt.php" 
     <div id="emailBlock" class="flex" style="margin-top:10px">
-      <input id="emailTo" placeholder="customer@example.com" style="flex:1;padding:8px" value="${customer_email||''}">
-      <button id="emailBtn" class="btn">Email Receipt</button>
+      <input type = "email" id="emailTo" placeholder="customer@example.com" style="flex:1;padding:8px" value="${customer_email||''}">
+      <button id="emailBtn" class="btn" type = "button">Email Receipt</button>
       <span id="emailStatus" class="muted"></span>
     </div>
 
 `;
+
+
+alert(payload)
+const emailBtn = document.getElementById("emailBtn");
+const emailInput = document.getElementById("emailTo");
+const emailStatus = document.getElementById("emailStatus");
+
+emailBtn.onclick = async () => {
+  const customerEmail = emailInput.value.trim();
+
+  //  payload
+  const info = {
+    email: customerEmail,
+    subject: "NutriPOS receipt: " + id,
+    comment: payload   // <-- nutrition/order summary string
+  };
+  try {
+    const res = await fetch("../backend/email_receipt.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(info)
+    });
+    const out = await res.text();
+    emailStatus.textContent = out; // raw PHP echo for now
+  } catch (e) {
+    console.error(e);
+    emailStatus.textContent = "Error sending request";
+  }
+};
+
+  
+
 
 
 function makeCode () {		
@@ -263,7 +296,7 @@ function makeCode () {
   // Generate new QR
   var text = "http://localhost/NutriPOS/NutriPOS/KP628---NutriPOS/NUTRIPOS/public/receipt.html?id=";
   var link = text + id
-  alert(link)
+  // alert(link)
 	// qrcode.makeCode(link);
 
   new QRCode(document.getElementById("qrcode"), {
