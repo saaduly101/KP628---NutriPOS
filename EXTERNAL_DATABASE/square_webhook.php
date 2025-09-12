@@ -118,7 +118,6 @@ if (hash_equals($computed, $signatureHeader)) {
 } else {
 	// header("HTTP/1.1 403 Forbidden");
 	// exit("403 Forbidden - You don't have permission to access this resource.");
-    echo "Forbidden 403";
     http_response_code(403);
 }
 
