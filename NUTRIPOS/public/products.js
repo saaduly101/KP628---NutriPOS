@@ -179,11 +179,7 @@ async function calculate(){
   new QRCode(document.getElementById('qrcode'), JSON.stringify({name: document.getElementById('productName').value, totals: t}));
 }
 
-// function addRow(data){ document.getElementById('ingredients').appendChild(rowTemplate(data)); }
-
-function addRow(data = {}) {
-  document.querySelector('#ingredients').appendChild(rowTemplate(data));
-}
+function addRow(data){ document.getElementById('ingredients').appendChild(rowTemplate(data)); }
 
 document.addEventListener('DOMContentLoaded', async ()=>{
   const addBtn = document.getElementById('addRow');
