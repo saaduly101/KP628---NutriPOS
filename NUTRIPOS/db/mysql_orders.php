@@ -67,9 +67,9 @@ echo <<<'HTML'
     </tr>
 HTML;
 
-$result = $conn->query("SELECT * FROM orders ORDER BY `Timestamp` DESC");
+$result = $conn->query("SELECT * FROM orders ORDER BY closed_at DESC");
 while($row = $result->fetch_assoc()) {
-    echo "<tr><td><a href='../order?order=" . $row['id'] . "'>" . $row['Timestamp'] . "</a></td><td>" . $row['Value'] . "</td></tr>";
+    echo "<tr><td><a href='../order?order=" . $row['id'] . "'>" . $row['closed_at'] . "</a></td><td>" . $row['total'] . "</td></tr>";
 }
 
 echo <<<'HTML'
