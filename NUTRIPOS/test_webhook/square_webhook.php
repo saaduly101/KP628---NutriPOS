@@ -154,33 +154,52 @@ if (hash_equals($computed, $signatureHeader)) {
                 error_log("Error inserting order line item: " . $order_line_item_stmt->error);
             }
 
-            // Insert Modifiers into DB using prepared statement
-            $modifier_stmt = $conn->prepare("INSERT IGNORE INTO modifiers (modifier_catalog_object_id, name) VALUES (?, ?)");
+            // Prepare statements for modifier operations
+            $modifier_check_stmt = $conn->prepare("SELECT id FROM modifiers WHERE modifier_catalog_object_id = ?");
+            $modifier_insert_stmt = $conn->prepare("INSERT INTO modifiers (modifier_catalog_object_id, name) VALUES (?, ?)");
             $order_line_item_modifier_stmt = $conn->prepare("INSERT INTO order_line_item_modifiers (order_line_item_id, modifier_id, quantity) VALUES (?, ?, ?)");
             
             foreach($line_item['modifiers'] as $modifier) {
-                $modifier_stmt->bind_param("ss", 
-                    $modifier['catalog_object_id'], 
-                    $modifier['name']
-                );
+                $modifier_id = null;
                 
-                if ($modifier_stmt->execute()) {
-                    $modifier_id = $conn->insert_id; // Get the auto-incremented ID
+                // Check if modifier exists
+                $modifier_check_stmt->bind_param("s", $modifier['catalog_object_id']);
+                $modifier_check_stmt->execute();
+                $result = $modifier_check_stmt->get_result();
+                
+                if ($result->num_rows > 0) {
+                    // Modifier exists, get its ID
+                    $row = $result->fetch_assoc();
+                    $modifier_id = $row['id'];
                 } else {
-                    error_log("Error inserting modifier: " . $modifier_stmt->error);
+                    // Insert new modifier
+                    $modifier_insert_stmt->bind_param("ss", 
+                        $modifier['catalog_object_id'], 
+                        $modifier['name']
+                    );
+                    
+                    if ($modifier_insert_stmt->execute()) {
+                        $modifier_id = $conn->insert_id;
+                    } else {
+                        error_log("Error inserting modifier: " . $modifier_insert_stmt->error);
+                    }
                 }
-
-                $order_line_item_modifier_stmt->bind_param("ssi", 
-                    $order_line_item_id, 
-                    $modifier_id, 
-                    $modifier['quantity']
-                );
                 
-                if (!$order_line_item_modifier_stmt->execute()) {
-                    error_log("Error inserting order line item modifier: " . $order_line_item_modifier_stmt->error);
+                // Only proceed if we have a valid modifier_id
+                if ($modifier_id) {
+                    $order_line_item_modifier_stmt->bind_param("iii", 
+                        $order_line_item_id, 
+                        $modifier_id, 
+                        $modifier['quantity']
+                    );
+                    
+                    if (!$order_line_item_modifier_stmt->execute()) {
+                        error_log("Error inserting order line item modifier: " . $order_line_item_modifier_stmt->error);
+                    }
                 }
             }
-            $modifier_stmt->close();
+            $modifier_check_stmt->close();
+            $modifier_insert_stmt->close();
             $order_line_item_modifier_stmt->close();
         }
         $line_item_stmt->close();
