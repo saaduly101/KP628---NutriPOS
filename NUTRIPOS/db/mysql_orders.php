@@ -26,6 +26,8 @@ if (!$conn) {
 // ";
 echo <<<'HTML'
 <head>
+    <link rel="stylesheet" href="../public/style.css" />
+    <!--
     <style>
         table {
             /* width: 50%; */
@@ -58,18 +60,44 @@ echo <<<'HTML'
             /* color: white; */
         }
     </style>
+    -->
 </head>
-<h1>Select an Order:</h1>
-<table>
-    <tr>
-        <th>Date and Time</th>
-        <th>Value</th>
-    </tr>
+<body>
+    <nav class="navbar">
+      <div class="navbar-container">
+        <div class="logo-dashboard"> 
+          <a href="#" class="logo">NutriPOS</a>
+          <span class="admin-dashboard">Admin Dashboard</span>
+        </div>
+        <ul class="navbar-links">
+          <li><a href="../public/custom_pos_builder.html" class="nav-button">Menu Builder</a></li>
+          <li><a href="../public/products.html" class="nav-button">Menu Management</a></li>
+          <li><a href="../db/mysql_orders.php" class="nav-button active">Order History</a></li>
+        </ul>
+        <div class="user-section">
+          <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
+          <a href="logout.php"><button class="logout-btn">Logout</button></a>
+        </div>
+      </div>
+    </nav>
+    <h2>Select an Order:</h2>
+    <table>
+       <tr>
+            <th>ID</th>
+            <th>Date and Time</th>
+            <th>Value</th>
+       </tr>
+</body>
 HTML;
 
 $result = $conn->query("SELECT * FROM orders ORDER BY closed_at DESC");
 while($row = $result->fetch_assoc()) {
-    echo "<tr><td><a href='../order.php?order=" . $row['id'] . "'>" . $row['closed_at'] . "</a></td><td>" . $row['total'] . "</td></tr>";
+    echo "
+    <tr>
+        <td><a href='../order.php?order=" . $row['id'] . "'>" . $row['id'] . "</a></td>
+        <td><a href='../order.php?order=" . $row['id'] . "'>" . $row['closed_at'] . "</a></td>
+        <td>" . $row['total'] . "</td>
+    </tr>";
 }
 
 echo <<<'HTML'
