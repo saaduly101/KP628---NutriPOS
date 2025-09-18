@@ -72,9 +72,11 @@ while($row = $result->fetch_assoc()) {
     echo "<tr><td><a href='../order.php?order=" . $row['id'] . "'>" . $row['closed_at'] . "</a></td><td>" . $row['total'] . "</td></tr>";
 }
 
+
 echo <<<'HTML'
 </table>
 HTML;
+
 
 // Close connection
 mysqli_close($conn);

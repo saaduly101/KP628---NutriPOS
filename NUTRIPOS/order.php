@@ -26,7 +26,8 @@ if (isset($_GET['order'])) {
         o.total, 
         li.line_item_catalog_object_id, 
         li.name AS line_item_name, 
-        li.variation_name, 
+        li.variation_name,
+        li.sku, 
         oli.quantity AS line_item_quantity, 
         m.name AS modifier_name, 
         olim.quantity AS modifier_quantity 
@@ -47,6 +48,8 @@ if (isset($_GET['order'])) {
             echo "Order: " . $row['order_id'] . "<br>";
             echo "Time: " . $row['closed_at'] . "<br>";
             echo "Total: " . $row['total'] . "<br>";
+            echo "SKU: " . $row['sku'] . "<br>";
+
             echo "<h2>Items:</h2>";
             echo "-------------------<br>";
             $first_row = false;
@@ -65,6 +68,9 @@ if (isset($_GET['order'])) {
             $line_item_text = $row['line_item_quantity'] . 'x ' . $row['line_item_name'];
             if (!empty($row['variation_name'])) {
                 $line_item_text .= ' (' . $row['variation_name'] . ')';
+            }
+            if (!empty($row['sku'])) {
+           $line_item_text .= ' [SKU: ' . $row['sku'] . ']';
             }
             echo $line_item_text . "<br>";
         }
