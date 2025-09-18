@@ -1,8 +1,6 @@
 <?php
 
 require '../vendor/autoload.php';
-require_once __DIR__.'/../backend/auth.php';
-auth_require_admin();
 
 use Dotenv\Dotenv;
 
