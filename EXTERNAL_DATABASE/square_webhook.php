@@ -210,4 +210,136 @@ if (hash_equals($computed, $signatureHeader)) {
     exit;
 }
 
+require __DIR__ . '/../../vendor/autoload.php';
+
+$dotenv = Dotenv::createImmutable(__DIR__ . '/../../');
+$dotenv->load();
+
+require_once __DIR__ . '/../backend/nutrition_lib.php';
+require_once __DIR__ . '/../backend/nutrition_calc_service.php';
+require_once __DIR__ . '/../backend/square_fetch_order.php';
+
+// 1) Read webhook
+$raw = file_get_contents("php://input");
+$event = json_decode($raw, true);
+if (!$event || !isset($event['data'])) {
+    http_response_code(400);
+    exit("invalid payload");
+}
+
+// 2) Extract order ID
+$orderId = $event['data']['id'] ?? ($event['data']['object']['order']['id'] ?? null);
+if (!$orderId) {
+    http_response_code(200);
+    exit("no order id");
+}
+
+// 3) Fetch full order from Square API
+$order = fetch_square_order($_ENV['SQUARE_ACCESS_TOKEN'], $orderId);
+if (!$order) {
+    http_response_code(200);
+    exit("fetch fail");
+}
+
+// 4) Connect to DB
+$conn = mysqli_connect(
+    $_ENV['DB_SERVERNAME'],
+    $_ENV['DB_USERNAME'],
+    $_ENV['DB_PASSWORD'],
+    $_ENV['DB_NAME']
+);
+if (!$conn) {
+    http_response_code(500);
+    exit("DB fail");
+}
+
+// 5) Map Square line items → AFCD items
+$items = [];
+foreach ($order['line_items'] ?? [] as $li) {
+    $qty = (int)$li['quantity'];
+    $name = $li['name'];
+    $catObjId = $li['catalog_object_id'] ?? null;
+    $sku = $li['variation_name'] ?? null;
+
+    $map = catalog_map_lookup($conn, $catObjId, $sku, $name);
+    if (!$map) continue;
+
+    $items[] = [
+        'name'      => $name,
+        'afcd_code' => $map['afcd_code'],
+        'grams'     => $map['grams_per_unit'] * $qty,
+        'qty'       => $qty
+    ];
+}
+
+if (!$items) {
+    http_response_code(200);
+    exit("no mapped items");
+}
+
+// 6) Calculate nutrition totals
+$calc = calc_totals_from_items($conn, $items);
+$tot = $calc['totals'];
+
+// 7) Insert order into DB
+$stmt = $conn->prepare("
+    INSERT INTO orders (created_at, customer_email, energy_kj, calories_kcal, protein_g, fat_g, carb_g, sugars_g, sodium_mg)
+    VALUES (NOW(),?,?,?,?,?,?,?,?)
+");
+$customerEmail = $order['customer_id'] ?? null; // You can fetch email via Customers API if needed
+$stmt->bind_param(
+    "sddddddd",
+    $customerEmail,
+    $tot['Energy (kJ)'],
+    $tot['Calories (kcal)'],
+    $tot['Protein (g)'],
+    $tot['Fat (g)'],
+    $tot['Carbohydrate (g)'],
+    $tot['Sugars (g)'],
+    $tot['Sodium (mg)']
+);
+$stmt->execute();
+$newOrderId = $stmt->insert_id;
+
+// 8) Insert order items
+$istmt = $conn->prepare("
+    INSERT INTO order_items (order_id, name, afcd_code, grams, qty)
+    VALUES (?,?,?,?,?)
+");
+foreach ($items as $it) {
+    $istmt->bind_param("issdi", $newOrderId, $it['name'], $it['afcd_code'], $it['grams'], $it['qty']);
+    $istmt->execute();
+}
+
+// 9) Build nutrition payload
+$payload = "NutriPOS #{$newOrderId}\n"
+    ."Energy: ".number_format($tot['Energy (kJ)'],1)." kJ (".number_format($tot['Calories (kcal)'],1)." kcal)\n"
+    ."Protein: ".number_format($tot['Protein (g)'],2)." g\n"
+    ."Fat: ".number_format($tot['Fat (g)'],2)." g\n"
+    ."Carb: ".number_format($tot['Carbohydrate (g)'],2)." g\n"
+    ."Sugars: ".number_format($tot['Sugars (g)'],2)." g\n"
+    ."Sodium: ".number_format($tot['Sodium (mg)'],0)." mg";
+
+// 10) Send email receipt
+if ($customerEmail) {
+    $data = [
+        'email'   => $customerEmail,
+        'subject' => "NutriPOS receipt: ".$newOrderId,
+        'comment' => $payload
+    ];
+    $ch = curl_init(__DIR__ . '/../backend/email_receipt.php');
+    curl_setopt($ch, CURLOPT_POST, 1);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_exec($ch);
+    curl_close($ch);
+}
+
+// 11) Finish
+mysqli_close($conn);
+http_response_code(200);
+echo "ok";
+
+
 ?>

@@ -107,3 +107,29 @@ function afcd_calc_totals(array $ingredients){
 
   return ['totals'=>$totals, 'matches'=>$matches];
 }
+
+// Lookup AFCD code + grams per unit for a Square item from catalog_map table
+function catalog_map_lookup(mysqli $conn, ?string $catalogObjectId, ?string $sku, ?string $name) {
+    // Try catalog_object_id first
+    if ($catalogObjectId) {
+        $stmt = $conn->prepare("SELECT afcd_code, grams_per_unit FROM catalog_map WHERE catalog_object_id = ? LIMIT 1");
+        $stmt->bind_param("s", $catalogObjectId);
+        $stmt->execute();
+        if ($row = $stmt->get_result()->fetch_assoc()) return $row;
+    }
+    // Try SKU if available
+    if ($sku) {
+        $stmt = $conn->prepare("SELECT afcd_code, grams_per_unit FROM catalog_map WHERE sku = ? LIMIT 1");
+        $stmt->bind_param("s", $sku);
+        $stmt->execute();
+        if ($row = $stmt->get_result()->fetch_assoc()) return $row;
+    }
+    // Fallback to name
+    if ($name) {
+        $stmt = $conn->prepare("SELECT afcd_code, grams_per_unit FROM catalog_map WHERE name = ? LIMIT 1");
+        $stmt->bind_param("s", $name);
+        $stmt->execute();
+        if ($row = $stmt->get_result()->fetch_assoc()) return $row;
+    }
+    return null;
+}

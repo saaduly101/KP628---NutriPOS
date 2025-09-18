@@ -100,9 +100,11 @@ while($row = $result->fetch_assoc()) {
     </tr>";
 }
 
+
 echo <<<'HTML'
 </table>
 HTML;
+
 
 // Close connection
 mysqli_close($conn);
