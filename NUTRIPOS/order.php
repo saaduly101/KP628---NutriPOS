@@ -1,5 +1,5 @@
 <?php
-// NUTRIPOS/order.php — Order detail page with the same navbar/look as mysql_orders.php
+// NUTRIPOS/order.php — Order detail page with compact single-card UI
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -80,6 +80,7 @@ foreach ($rows as $r) {
   }
 }
 ?>
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -89,18 +90,30 @@ foreach ($rows as $r) {
   <!-- IMPORTANT: from NUTRIPOS/ root to CSS in NUTRIPOS/public/ -->
   <link rel="stylesheet" href="public/style.css?v=1" />
 
-  <!-- Page-only cosmetics (won't touch navbar styles) -->
+  <!-- Page-only cosmetics (single card layout) -->
   <style>
-    .page-wrap { max-width: 1100px; margin: 24px auto; padding: 0 16px; }
+    .page-wrap { max-width: 1100px; margin: 80px auto 24px auto; padding: 0 16px; }
     .card {
       background:#fff; border:1px solid #e5e7eb; border-radius:12px;
-      padding:16px 20px; margin-bottom:20px;
+      padding:12px 16px; margin-bottom:20px;
     }
-    .muted { color:#6b7280; }
-    .idmono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
-    .item{ padding:10px 0; border-bottom:1px dashed #e5e7eb; }
-    .mods{ margin-left:16px; }
-    .dot{ margin-right:6px; }
+    .order-header { display:flex; justify-content:space-between; align-items:center;  margin-bottom:30px;}
+    .order-header h1 { margin:0; font-size:30px; }
+    .muted { color:#6b7280; font-size:14px; text-align:right; }
+    .idmono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace }
+
+    .section-title { margin:12px 0 6px 0; font-size:16px; }
+    .item { padding:10px 0; border-bottom:1px dashed #e5e7eb; }
+    .mods { margin-left:16px; }
+    .dot { margin-right:6px; }
+
+    .actions { display:flex; justify-content:flex-end; margin-top:12px; }
+    .btn {
+      display:inline-block; padding:8px 14px; border-radius:8px; border:1px solid #e5e7eb;
+      text-decoration:none; font-weight:500; transition:all .15s ease-in-out;
+      background:#f9fafb; color:#111827;
+    }
+    .btn:hover { background:#f3f4f6; transform: translateY(-1px); }
   </style>
 </head>
 <body>
@@ -125,15 +138,17 @@ foreach ($rows as $r) {
 
   <div class="page-wrap">
     <div class="card">
-      <h1>Order <span class="idmono">#<?= htmlspecialchars($header['order_id']) ?></span></h1>
-      <div class="muted">
-        Time: <?= htmlspecialchars($header['closed_at'] ?? '') ?><br>
-        Total: <?= htmlspecialchars($header['total'] ?? '$0.00') ?>
+      <!-- Order header row -->
+      <div class="order-header">
+        <h1>Order <span class="idmono">#<?= htmlspecialchars($header['order_id']) ?></span></h1>
+        <div class="muted">
+          Time: <?= htmlspecialchars($header['closed_at'] ?? '') ?><br>
+          Total: <?= htmlspecialchars($header['total'] ?? '$0.00') ?>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <h2>Items</h2>
+      <!-- Items -->
+      <h2 class="section-title">Items</h2>
       <?php foreach ($grouped as $g): ?>
         <?php
           $line = htmlspecialchars($g['qty'] . 'x ' . $g['name']);
@@ -152,9 +167,10 @@ foreach ($rows as $r) {
         </div>
       <?php endforeach; ?>
 
-      <p style="margin-top:10px;">
-        <a href="db/mysql_orders.php">&larr; Back to orders</a>
-      </p>
+      <!-- Back button -->
+      <div class="actions">
+        <a class="btn" href="db/mysql_orders.php">← Back to orders</a>
+      </div>
     </div>
   </div>
 </body>
