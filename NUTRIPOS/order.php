@@ -113,7 +113,7 @@ mysqli_close($conn);
             <li><a href="../db/mysql_orders.php" class="nav-button active">Order History</a></li>
           </ul>
           <div class="user-section">
-            <span class="admin"><?php echo htmlspecialchars($_SESSION['email'] ?? 'admin'); ?></span>
+            <span class="admin">admin@nutripos.local</span>
             <a href="../logout.php"><button class="logout-btn">Logout</button></a>
           </div>
         </div>
