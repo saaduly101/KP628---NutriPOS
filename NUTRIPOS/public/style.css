@@ -863,3 +863,224 @@ mark {
     text-align: center;
     padding: 40px;
 }
+
+/* order page (receipt) */
+.receipt-wrapper {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 0;
+}
+        
+.receipt-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+        
+.receipt-btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+        
+.receipt-btn.primary {
+    background-color: #2563EB;
+    color: white;
+}
+        
+.receipt-btn.primary:hover {
+    background-color: #1d4ed8;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+        
+.receipt-btn.secondary {
+    background-color: #6b7280;
+    color: white;
+}
+        
+.receipt-btn.secondary:hover {
+    background-color: #4b5563;
+}
+        
+.receipt-paper {
+    background: white;
+    border: 2px dashed #d1d5db;
+    padding: 30px;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    line-height: 1.4;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    position: relative;
+}
+
+
+.receipt-paper::before {
+    top: -12px;
+}
+        
+.receipt-paper::after {
+    bottom: -12px;
+}
+        
+.receipt-top {
+    text-align: center;
+    margin-bottom: 25px;
+    border-bottom: 1px dashed #6b7280;
+    padding-bottom: 15px;
+}
+        
+.receipt-logo {
+    font-size: 28px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+        
+.receipt-type {
+    font-size: 16px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #374151;
+}
+        
+.receipt-thanks {
+    font-size: 12px;
+    color: #6b7280;
+}
+        
+.order-details {
+    margin-bottom: 20px;
+}
+        
+.order-details div {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+    align-items: center;
+}
+        
+.order-details span:first-child {
+    color: #6b7280;
+}
+        
+.order-details span:last-child {
+    color: #374151;
+    font-weight: 500;
+}
+        
+.receipt-items {
+    margin-bottom: 20px;
+}
+        
+.receipt-items-title {
+    font-weight: bold;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #6b7280;
+    padding-bottom: 5px;
+    color: #374151;
+}
+        
+.receipt-line-item {
+    margin-bottom: 15px;
+}
+        
+.item-primary {
+    display: flex;
+    justify-content: space-between;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #111827;
+}
+        
+.item-variant {
+    font-size: 12px;
+    color: #6b7280;
+    margin-left: 0;
+    font-weight: normal;
+}
+        
+.item-addon {
+    margin-left: 20px;
+    font-size: 12px;
+    color: #6b7280;
+    display: flex;
+    justify-content: space-between;
+}
+        
+.receipt-summary {
+    border-top: 2px solid #374151;
+    padding-top: 15px;
+    margin-top: 20px;
+}
+        
+.receipt-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #111827;
+}
+        
+.receipt-footer {
+    text-align: center;
+    font-size: 12px;
+    margin-top: 20px;
+    color: #6b7280;
+}
+        
+.receipt-divider {
+    margin: 10px 0;
+    color: #d1d5db;
+}
+        
+.receipt-farewell {
+    margin-top: 10px;
+    color: #374151;
+}
+        
+.order-error {
+    text-align: center;
+    color: #dc2626;
+    font-size: 18px;
+    margin: 50px 0;
+    background: #fef2f2;
+    padding: 20px;
+    border-radius: 10px;
+    border: 1px solid #fecaca;
+}
+        
+@media print {
+    @page {
+        size: 80mm auto; 
+        margin: 0;       
+    }
+    .receipt-actions,
+    .navbar {
+        display: none !important;
+    }
+    .receipt-paper {
+        box-shadow: none;
+        border: 1px solid #000;
+        margin: 0;
+    }
+    .main-container {
+        margin: 0;
+        padding: 0;
+    }
+    body {
+        background: white;
+        margin: 0;
+        padding: 0;
+    }
+}
