@@ -1,5 +1,5 @@
 <?php
-// NUTRIPOS/order.php — Order detail page with compact single-card UI
+// NUTRIPOS/order.php — Order detail page with QR code between items and back button
 
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -15,16 +15,21 @@ $dotenv = Dotenv::createImmutable(__DIR__ . '/..');
 $dotenv->load();
 
 /** DB connection */
-$mysqli = mysqli_connect($_ENV['DB_SERVERNAME'], $_ENV['DB_USERNAME'], $_ENV['DB_PASSWORD'], $_ENV['DB_NAME']);
+$mysqli = mysqli_connect(
+  $_ENV['DB_SERVERNAME'],
+  $_ENV['DB_USERNAME'],
+  $_ENV['DB_PASSWORD'],
+  $_ENV['DB_NAME']
+);
 if (!$mysqli) {
   http_response_code(500);
-  exit("Database connection failed: " . mysqli_connect_error());
+  exit('Database connection failed: ' . mysqli_connect_error());
 }
 
 /** Require ?order= */
 if (empty($_GET['order'])) {
   http_response_code(400);
-  exit("Missing required parameter: order. Example: order.php?order=123");
+  exit('Missing required parameter: order. Example: order.php?order=123');
 }
 $orderId = $_GET['order'];
 
@@ -49,18 +54,18 @@ WHERE o.id = ?
 ORDER BY li.line_item_catalog_object_id, m.name
 ";
 $stmt = $mysqli->prepare($sql);
-if (!$stmt) { http_response_code(500); exit("Prepare failed: " . $mysqli->error); }
-$stmt->bind_param("s", $orderId);
-if (!$stmt->execute()) { http_response_code(500); exit("Execute failed: " . $stmt->error); }
+if (!$stmt) { http_response_code(500); exit('Prepare failed: ' . $mysqli->error); }
+$stmt->bind_param('s', $orderId);
+if (!$stmt->execute()) { http_response_code(500); exit('Execute failed: ' . $stmt->error); }
 $result = $stmt->get_result();
 if ($result->num_rows === 0) {
-  echo "<h2>No data</h2>Order not found: " . htmlspecialchars($orderId);
+  echo '<h2>No data</h2>Order not found: ' . htmlspecialchars($orderId);
   exit;
 }
 
 /** Group items */
-$rows   = $result->fetch_all(MYSQLI_ASSOC);
-$header = $rows[0];
+$rows    = $result->fetch_all(MYSQLI_ASSOC);
+$header  = $rows[0];
 $grouped = [];
 foreach ($rows as $r) {
   $key = $r['line_item_catalog_object_id'] ?: uniqid('li_', true);
@@ -79,8 +84,13 @@ foreach ($rows as $r) {
     ];
   }
 }
-?>
 
+/** Build absolute URL for this order (used in QR) */
+$scheme   = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$host     = $_SERVER['HTTP_HOST'] ?? 'localhost';
+$basePath = rtrim(dirname($_SERVER['REQUEST_URI'] ?? '/order.php'), '/');
+$orderUrl = $scheme . '://' . $host . $basePath . '/order.php?order=' . rawurlencode($header['order_id']);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -97,15 +107,21 @@ foreach ($rows as $r) {
       background:#fff; border:1px solid #e5e7eb; border-radius:12px;
       padding:12px 16px; margin-bottom:20px;
     }
-    .order-header { display:flex; justify-content:space-between; align-items:center;  margin-bottom:30px;}
+    .order-header { display:flex; justify-content:space-between; align-items:center; }
     .order-header h1 { margin:0; font-size:30px; }
     .muted { color:#6b7280; font-size:14px; text-align:right; }
     .idmono { font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace }
 
-    .section-title { margin:12px 0 6px 0; font-size:16px; }
+    .section-title { margin:20px 0 8px 0; font-size:16px; }
     .item { padding:10px 0; border-bottom:1px dashed #e5e7eb; }
     .mods { margin-left:16px; }
     .dot { margin-right:6px; }
+
+    /* QR area (between items and back button) */
+    .qr-wrap { display: flex;flex-direction: column; align-items: center;  margin: 20px 0;}
+    #qrcode > img, #qrcode > canvas {width:128px; height:128px;border-radius:8px;box-shadow:0 0 0 1px #e5e7eb inset;}
+    .qr-caption {font-size:14px;color:#6b7280;margin-top:8px; margin-left: -20px;  }
+
 
     .actions { display:flex; justify-content:flex-end; margin-top:12px; }
     .btn {
@@ -167,11 +183,38 @@ foreach ($rows as $r) {
         </div>
       <?php endforeach; ?>
 
+      <!-- QR code (between items and the back button) -->
+    <div class="qr-wrap center">
+      <div id="qrcode"></div>
+      <div class="qr-caption">Scan to open this order</div>
+    </div>
+
       <!-- Back button -->
       <div class="actions">
         <a class="btn" href="db/mysql_orders.php">← Back to orders</a>
       </div>
     </div>
   </div>
+
+  <!-- Include QRCode library and generate QR -->
+  <script src="public/qrcode.js"></script>
+  <script>
+    (function () {
+      var el = document.getElementById('qrcode');
+      if (!el || typeof QRCode === 'undefined') return;
+
+      // PHP-generated absolute URL to this order
+      var orderUrl = <?= json_encode($orderUrl, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?>;
+
+      new QRCode(el, {
+        text: orderUrl,           // or '<?= htmlspecialchars($header['order_id'], ENT_QUOTES) ?>' to encode only the ID
+        width: 128,
+        height: 128,
+        colorDark: "#111827",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.M
+      });
+    })();
+  </script>
 </body>
 </html>
