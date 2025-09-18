@@ -66,7 +66,7 @@ echo <<<'HTML'
     <nav class="navbar">
       <div class="navbar-container">
         <div class="logo-dashboard"> 
-          <a href="#" class="logo">NutriPOS</a>
+          <a href="../admin/dashboard.php" class="logo">NutriPOS</a>
           <span class="admin-dashboard">Admin Dashboard</span>
         </div>
         <ul class="navbar-links">
@@ -80,7 +80,8 @@ echo <<<'HTML'
         </div>
       </div>
     </nav>
-    <h2>Select an Order:</h2>
+    <h2>Order History</h2>
+    <p>Daily sales and transaction records</p>
     <table>
        <tr>
             <th>ID</th>
