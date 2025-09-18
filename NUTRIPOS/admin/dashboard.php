@@ -12,13 +12,13 @@ auth_require_admin();
     <nav class="navbar">
       <div class="navbar-container">
         <div class="logo-dashboard"> 
-          <a href="#" class="logo">NutriPOS</a>
+          <a href="../admin/dashboard.php" class="logo">NutriPOS</a>
           <span class="admin-dashboard">Admin Dashboard</span>
         </div>
         <ul class="navbar-links">
           <li><a href="../public/custom_pos_builder.html" class="nav-button">Menu Builder</a></li>
           <li><a href="../public/products.html" class="nav-button">Menu Management</a></li>
-          <li><a href="orders.php" class="nav-button">Order History</a></li>
+          <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
         </ul>
         <div class="user-section">
           <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
