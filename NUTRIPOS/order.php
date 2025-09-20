@@ -27,7 +27,7 @@ if (isset($_GET['order'])) {
         li.line_item_catalog_object_id, 
         li.name AS line_item_name, 
         li.variation_name,
-        li.sku, 
+        cm.sku AS sku,
         oli.quantity AS line_item_quantity, 
         m.name AS modifier_name, 
         olim.quantity AS modifier_quantity 
@@ -35,7 +35,8 @@ if (isset($_GET['order'])) {
     JOIN order_line_items oli ON o.id = oli.order_id 
     JOIN line_items li ON oli.line_item_catalog_object_id = li.line_item_catalog_object_id 
     LEFT JOIN order_line_item_modifiers olim ON oli.id = olim.order_line_item_id 
-    LEFT JOIN modifiers m ON olim.modifier_id = m.id 
+    LEFT JOIN modifiers m ON olim.modifier_id = m.id
+    LEFT JOIN catalog_map cm ON cm.catalog_object_id = li.line_item_catalog_object_id    
     WHERE o.id ='" . $order . "'");
     
     // Display order header information
@@ -70,7 +71,7 @@ if (isset($_GET['order'])) {
                 $line_item_text .= ' (' . $row['variation_name'] . ')';
             }
             if (!empty($row['sku'])) {
-           $line_item_text .= ' [SKU: ' . $row['sku'] . ']';
+                        $line .= ' [SKU: ' . htmlspecialchars($row['sku']) . ']';
             }
             echo $line_item_text . "<br>";
         }
