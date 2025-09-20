@@ -3,15 +3,64 @@
 <head>
   <meta charset="UTF-8" />
   <title>NutriPOS – Saved Products</title>
+
+  <!-- Keep your global site styles (navbar, fonts, etc.) -->
   <link rel="stylesheet" href="style.css" />
+
   <style>
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding: 8px; border-bottom: 1px solid #eee; text-align:left; }
-    .btn { padding:6px 10px; border:1px solid #ccc; border-radius:6px; background:#fff; cursor:pointer; }
-    .btn.danger { border-color:#e33; color:#e33; }
+    /* --- Local page styles (np- prefixed to avoid conflicts) --- */
+    *, *::before, *::after { box-sizing: border-box; }
+    body { background:#f3f4f6; }
+
+    .np-page { max-width: 980px; margin: 24px auto 64px; padding: 0 16px; }
+    .np-title { margin: 8px 0; font-size: 22px; color:#1f2937; }
+    .np-sub   { margin: 0 0 16px; font-size: 16px; color:#000; font-weight: 500; }
+
+    .np-card {
+      background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+      padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04); overflow:hidden;
+    }
+
+    .np-head {
+      display:flex; align-items:center; justify-content:space-between; gap:12px;
+      margin-bottom: 10px;
+    }
+
+    /* Buttons (match Menu Builder look) */
+    .np-btn {
+      border:1px solid #e5e7eb; border-radius:10px; padding:10px 14px;
+      background:#f9fafb; color:#111827; font-weight:600; cursor:pointer;
+    }
+    .np-btn:hover { background:#f3f4f6; }
+    .np-btn--primary { background:#2563eb; color:#fff; border-color:transparent; }
+    .np-btn--primary:hover { filter: brightness(0.98); }
+    .np-btn--danger  { background:#fff; color:#ef4444; border-color:#ef4444; }
+    .np-btn--danger:hover { background:#fee2e2; }
+
+    /* Table styled like the ingredient grid */
+    .np-table {
+      width:100%; border-collapse: separate; border-spacing:0;
+      border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; background:#fff;
+    }
+    .np-table thead th {
+      background:#f9fafb; color:#6b7280; font-weight:600; font-size:14px; text-align:left;
+      padding:10px 12px; border-bottom:1px solid #e5e7eb;
+    }
+    .np-table tbody td {
+      padding:10px 12px; border-bottom:1px solid #f3f4f6; color:#1f2937;
+    }
+    .np-table tbody tr:last-child td { border-bottom:none; }
+
+    /* Small button group in table */
+    .np-actions { display:flex; gap:8px; }
+
+    /* Make links inside card look like regular text links */
+    .np-link { text-decoration:none; color:#2563eb; }
+    .np-link:hover { text-decoration:underline; }
   </style>
 </head>
 <body>
+  <!-- NAVBAR: unchanged -->
   <nav class="navbar">
     <div class="navbar-container">
       <div class="logo-dashboard"> 
@@ -30,17 +79,53 @@
     </div>
   </nav>
 
-  <h2>Saved Products</h1>
-  <a href="custom_pos_builder.html" class="btn">+ Create New</a>
-  <table>
-    <thead><tr><th>Name</th><th>Updated</th><th>Actions</th></tr></thead>
-    <tbody id="list"></tbody>
-  </table>
+  <!-- PAGE CONTENT -->
+  <main class="np-page">
+    <h1 class="np-title">Saved Products</h1>
+    <p class="np-sub">Manage your product templates. Edit or delete saved items, or create a new one.</p>
+
+    <section class="np-card">
+      <!-- Header row with Create New on the right -->
+      <div class="np-head">
+        <div style="font-weight:600; color:#374151;">Saved Products</div>
+        <a href="custom_pos_builder.html" class="np-btn np-btn--primary">+ Create New</a>
+      </div>
+
+      <!-- Products table -->
+      <table class="np-table">
+        <thead>
+          <tr>
+            <th style="width:55%;">Name</th>
+            <th style="width:25%;">Updated</th>
+            <th style="width:20%;">Actions</th>
+          </tr>
+        </thead>
+        <tbody id="list"><!-- rows injected by JS --></tbody>
+      </table>
+    </section>
+  </main>
+
+  <!-- Scripts (unchanged) -->
   <script src="custom_pos_builder.js"></script>
   <script src="products.js"></script>
-
   <script>
+    // Expect products.js to define listProducts() and populate #list
     listProducts();
+
+    // Optionally, if your products.js creates plain buttons/links:
+    // - Give edit buttons class 'np-btn' for a consistent look:
+    // - Give delete buttons class 'np-btn np-btn--danger'
+    // Example row HTML your JS can generate:
+    // <tr>
+    //   <td>Complete Beef Burger</td>
+    //   <td>2025/09/20 23:46:15</td>
+    //   <td>
+    //     <div class="np-actions">
+    //       <a href="custom_pos_builder.html?id=..." class="np-btn">Edit</a>
+    //       <button class="np-btn np-btn--danger" onclick="deleteProduct('...')">Delete</button>
+    //     </div>
+    //   </td>
+    // </tr>
   </script>
 </body>
 </html>
