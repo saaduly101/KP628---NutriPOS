@@ -3,12 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <title>NutriPOS – Custom Product Builder + POS Simulator</title>
-  <link rel="stylesheet" href="style.css" />
-  <style>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Global site CSS (same as order.php) to keep the navbar consistent -->
+  <link rel="stylesheet" href="style.css?v=1" />
+
+  <style>
+  /* --- Global reset to avoid width overflow issues anywhere --- */
+  *, *::before, *::after { box-sizing: border-box; }
+
+  /* Page background consistent with order.php */
+  body { background:#f3f4f6; }
+
+  /* Main page layout */
+  .np-page { max-width: 980px; margin: 24px auto 64px; padding: 0 16px; }
+  .np-title { margin: 8px 0; font-size: 22px; color:#1f2937; }
+  .np-sub { margin: 0 0 16px; font-size: 22px; color: #000000;  font-weight: 600; }
+
+  /* Card container */
+  .np-card {
+    background:#fff; border:1px solid #e5e7eb; border-radius:12px;
+    padding:16px; box-shadow:0 1px 2px rgba(0,0,0,.04);
+    margin-bottom:8px;     /* smaller gap to next section */
+    overflow:hidden;       /* clip any child rounding edges */
+  }
+
+  /* Field block */
+  .np-field { display:flex; flex-direction:column; gap:8px; margin-bottom:14px; }
+  .np-label { font-size:14px; color:#374151; }
+
+  /* Inputs: never overflow the card */
+  .np-input {
+    width:100%;            /* width inside card */
+    padding:10px 12px;
+    border:1px solid #d1d5db; border-radius:8px;
+    outline:none; background:#fff; font: inherit;
+    box-sizing:border-box;  /* include padding & border in width */
+  }
+  .np-input:focus { border-color:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.15); }
+
+  /* Section header row */
+  .np-sectionhead {
+    margin:8px 0; display:flex; align-items:center; justify-content:space-between;
+    padding-right:8px;     /* keep the blue button inside the card edge */
+  }
+  .np-sectionhead h3 { margin:0; font-size:16px; color:#374151; }
+
+  /* Table: safe sizing inside the card */
+  .np-table {
+    width:100%;
+    border-collapse:separate; border-spacing:0; /* keep rounded corners smooth */
+    border:1px solid #e5e7eb; border-radius:10px; overflow:hidden; background:#fff;
+    margin-bottom:10px;
+    box-sizing:border-box; /* avoid overflow due to borders */
+  }
+  .np-table thead th {
+    background:#f9fafb; color:#6b7280; font-weight:600; font-size:14px; text-align:left;
+    padding:10px 12px; border-bottom:1px solid #e5e7eb;
+  }
+  .np-table tbody td { padding:8px 10px; border-bottom:1px solid #f3f4f6; }
+  .np-table input {
+    width:100%; padding:8px 10px; border:1px solid #d1d5db; border-radius:8px; background:#fff; font: inherit;
+    box-sizing:border-box; /* inputs inside table also safe */
+  }
+  .np-table .np-iconbtn {
+    display:inline-flex; align-items:center; justify-content:center;
+    width:36px; height:36px; border-radius:8px; border:none; cursor:pointer;
+    background:#fca5a522;
+  }
+  .np-table .np-iconbtn:hover { background:#fca5a544; }
+
+  /* Action buttons row */
+  .np-actions { display:flex; gap:10px; margin-top:10px; }
+
+  .np-btn { border:1px solid transparent; border-radius:10px; padding:10px 14px; cursor:pointer;
+            font-weight:600; font-size:14px; font-family: inherit; }
+  .np-btn--green { background:#10b981; color:#fff; }
+  .np-btn--green:hover { filter: brightness(0.98); }
+  .np-btn--blue { background:#2563eb; color:#fff; }
+  .np-btn--blue:hover { filter: brightness(0.98); }
+  .np-btn--ghost { background:#f3f4f6; color:#374151; border-color:#e5e7eb; }
+  .np-btn--ghost:hover { background:#e5e7eb; }
+
+  /* POS row */
+  .np-formrow { display:flex; gap:10px; align-items:center; margin-top:6px; }
+  .np-formrow .np-input { flex:1; }
+
+  .np-hr { height:1px; background:#e5e7eb; margin:24px 0; }
+
+  /* Remove big blank space above Nutrition Totals */
+  #qrcode { display:none !important; margin:0 !important; padding:0 !important; height:0 !important; }
+  #qrcode.has-qr { display:flex !important; height:auto !important; margin-top:12px !important; }
+  #result { margin-top:8px; padding-top:0; }
+
+  /* Fallback: ensure navbar list has no bullets if global CSS fails */
+  .navbar-links { list-style:none; margin:0; padding:0; }
+
+  /* Mobile tweaks */
+  @media (max-width: 720px) {
+    .np-formrow { flex-direction: column; align-items: stretch; }
+    .np-sectionhead { flex-direction: column; align-items: flex-start; gap: 8px; padding-right:0; }
+  }
   </style>
 </head>
 <body>
+
+  <!-- Top navbar (unchanged, same classes/structure as order.php) -->
   <nav class="navbar">
     <div class="navbar-container">
       <div class="logo-dashboard"> 
@@ -16,107 +116,76 @@
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
-        <li><a href="custom.html" class="nav-button active">Menu Builder</a></li>
+        <li><a href="custom_pos_builder.html" class="nav-button active">Menu Builder</a></li>
         <li><a href="products.html" class="nav-button">Menu Management</a></li>
         <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
       </ul>
       <div class="user-section">
-        <span class="admin">Admin</span>
-        <a href="../NUTRIPOS/admin/logout.php"><button class="logout-btn">Logout</button></a>
+        <span class="admin">admin</span>
+        <a href="../admin/logout.php"><button class="logout-btn">Logout</button></a>
       </div>
     </div>
   </nav>
 
-  <h2>NutriPOS – Custom Product Builder</h2>
+  <!-- Page content -->
+  <main class="np-page">
+    <h1 class="np-title">Menu Builder</h1>
+    <p class="np-sub">Create new menu items with ingredients and nutrition calculation</p>
 
+    <section class="np-card">
+      <!-- Product Name -->
+      <div class="np-field">
+        <label for="productName" class="np-label">Product Name</label>
+        <input id="productName" class="np-input" placeholder="Enter product name…" />
+      </div>
 
-  <div class="flex">
-    <input id="productName" placeholder="Product name e.g. Beef Burger" style="flex:1;padding:8px" />
-    <button id="saveBtn" class="btn primary">Save Product</button>
-    <a class="btn ghost" href="products.html">View Saved Products</a>
-  </div>
-  <p class="muted">Type to search AFCD. Suggestions include code, category and nutrients. Click to fill the code automatically.</p>
+      <!-- Ingredients header -->
+      <div class="np-sectionhead">
+        <h3>Ingredients</h3>
+        <button id="addRow" class="np-btn np-btn--blue">+ Add Ingredient</button>
+      </div>
 
-  <table id="grid" class="grid under">
-    <thead>
-      <tr>
-        <th>Ingredient Name</th>
-        <th>AFCD Code (optional)</th>
-        <th>Notes</th>
-        <th>Weight (g)</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id = "ingredients" class="ingredients">
-      <!-- Ingredient rows will go here -->
-    </tbody>
-  </table>
-  
-  
-  <!-- <div id = "grid" class="grid" style="font-weight:bold; margin-top:10px">
-    <div>Ingredient Name</div>
-    <div>AFCD Code (optional)</div>
-    <div>Notes</div>
-    <div>Weight (g)</div>
-    <div></div>
-  </div>
-  <div id="ingredients" class="ingredients"></div> -->
+      <!-- Ingredients table -->
+      <table id="grid" class="np-table">
+        <thead>
+          <tr>
+            <th>Ingredient Name</th>
+            <th>AFCD Code (optional)</th>
+            <th>Notes</th>
+            <th>Weight (g)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="ingredients" class="ingredients"></tbody>
+      </table>
 
+      <!-- Actions -->
+      <div class="np-actions">
+        <button id="calcBtn" class="np-btn np-btn--green">Calculate Nutrition</button>
+        <button id="saveBtn" class="np-btn np-btn--ghost">Save Product</button>
+      </div>
+    </section>
 
-  <div class="flex" style="margin-top:8px">
-    <button id="addRow" class="btn ghost">+ Add Ingredient</button>
-    <button id="calcBtn" class="btn primary">Calculate Nutrition</button>
-    <span class="muted">Tip: leave AFCD code empty and just type names—we’ll smart-match.</span>
-  </div>
-
+    <!-- Nutrition Totals -->
     <div id="qrcode"></div>
+    <div id="result" class="totals" style="display:none"></div>
+    <div class="np-hr"></div>
 
-  <div id="result" class="totals" style="display:none"></div>
-  <div class="hr"></div>
-  
+    <!-- POS Simulator -->
+    <h2 class="np-title">POS Simulator (no payment)</h2>
+    <p class="np-sub">Add customer email (optional) and “Create Order” to save, get a receipt link & QR. You can also email the receipt.</p>
 
-  <h2>POS Simulator (no payment)</h2>
-  <p>Add customer email (optional) and “Create Order” to save, get a receipt link & QR. You can also email the receipt.</p>
+    <div class="np-formrow">
+      <label for="custEmail" class="np-label" style="color:#6b7280">Customer Email (optional):</label>
+      <input id="custEmail" class="np-input" value="customer@example.com" placeholder="customer@example.com" />
+      <button id="createOrderBtn" class="np-btn np-btn--green">Create Order</button>
+    </div>
 
-  
-  <div class="flex">
-    <label for="custEmail" class="muted">Customer Email (optional):</label>
-    <input id="custEmail" value="customer@example.com" placeholder="customer@example.com" style="flex:1;padding:8px"/>
-    <button id="createOrderBtn" class="btn primary">Create Order</button>
-  </div>
-  
+    <div id="orderResult" style="margin-top:12px"></div>
+  </main>
 
-  <div id="orderResult" style="margin-top:12px"></div>
-
+  <!-- Scripts -->
   <script src="qrcode.js"></script>
   <script src="custom_pos_builder.js"></script>
-
-  <script>
-function generateNutritionQR(totals){
-  // Stringify nicely for scanning
-  const payload = `
-  Energy: ${totals["Energy (kJ)"]} kJ (${totals["Calories (kcal)"]} kcal)
-  Protein: ${totals["Protein (g)"]} g
-  Fat: ${totals["Fat (g)"]} g
-  Carbohydrate: ${totals["Carbohydrate (g)"]} g
-  Sugars: ${totals["Sugars (g)"]} g
-  Sodium: ${totals["Sodium (mg)"]} mg
-  `;
-}
-
-// Example usage after calculating:
-const totals = {
-  "Energy (kJ)": 4221.7,
-  "Calories (kcal)": 1009.0,
-  "Protein (g)": 35.91,
-  "Fat (g)": 84.43,
-  "Carbohydrate (g)": 27.29,
-  "Sugars (g)": 12.04,
-  "Sodium (mg)": 836
-};
-generateNutritionQR(totals);
-
-</script>
-
 </body>
 </html>
