@@ -865,17 +865,287 @@ mark {
 }
 
 /* order page (receipt) */
-.receipt-wrapper {
-    max-width: 400px;
-    margin: 20px auto;
-    padding: 0;
+.order-details-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    overflow: hidden;
+    margin-bottom: 30px;
 }
-        
-.receipt-actions {
+
+.order-header {
+    padding: 30px;
+}
+
+.order-header h2 {
+    margin: 0px;
     display: flex;
-    gap: 15px;
-    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.order-header h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.order-meta {
+    display: flex;
+    gap: 30px;
+    margin-top: 15px;
+    flex-wrap: wrap;
+}
+
+.meta-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.meta-label {
+    font-size: 12px;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.meta-value {
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.order-id-value {
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    background: rgba(255,255,255,0.2);
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+/* Order Content */
+.order-content {
+    padding: 0px 30px 30px 30px;
+}
+
+.section-title {
+    margin-top: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #374151;
     margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.section-title::before {
+    content: '🛒';
+}
+
+.items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.line-item {
+    background: #F9FAFB;
+    border: 1px solid #E5E7EB;
+    border-radius: 12px;
+    padding: 20px;
+    transition: all 0.3s;
+}
+
+.line-item:hover {
+    background: #F3F4F6;
+    transform: translateX(5px);
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.item-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: start;
+    margin-bottom: 10px;
+}
+
+.item-details {
+    flex: 1;
+}
+
+.item-name {
+    font-weight: 600;
+    color: #111827;
+    font-size: 16px;
+    margin-bottom: 5px;
+}
+
+.item-quantity {
+    background: #2563EB;
+    color: white;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.item-variation {
+    color: #6B7280;
+    font-size: 14px;
+    margin: 5px 0;
+    font-style: italic;
+}
+
+.item-modifiers {
+    margin-top: 10px;
+    padding-left: 20px;
+}
+
+.modifier {
+    color: #6B7280;
+    font-size: 14px;
+    padding: 3px 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.modifier::before {
+    content: '✓';
+    color: #10B981;
+    font-weight: bold;
+}
+
+.modifier-quantity {
+    background: #E5E7EB;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 12px;
+    margin-left: 5px;
+}
+
+/* Order Summary */
+.order-summary {
+    background: linear-gradient(135deg, #F3F4F6 0%, #E5E7EB 100%);
+    border-radius: 12px;
+    padding: 20px;
+    margin-top: 30px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 0;
+}
+
+.summary-row.total {
+    border-top: 2px solid #9CA3AF;
+    margin-top: 10px;
+    padding-top: 15px;
+    font-size: 20px;
+    font-weight: bold;
+    color: #111827;
+}
+
+.summary-label {
+    color: #6B7280;
+}
+
+.summary-value {
+    font-weight: 600;
+    color: #374151;
+}
+
+.total .summary-value {
+    color: #10B981;
+    font-size: 24px;
+}
+
+.error-container {
+    background: white;
+    border-radius: 20px;
+    padding: 60px 30px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-icon {
+    font-size: 64px;
+    margin-bottom: 20px;
+}
+
+.error-title {
+    font-size: 24px;
+    color: #EF4444;
+    margin-bottom: 10px;
+}
+
+.error-message {
+    color: #6B7280;
+    margin-bottom: 30px;
+    font-size: 16px;
+}
+
+/* Empty state */
+.no-items {
+    text-align: center;
+    padding: 40px;
+    color: #6B7280;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    body::before {
+        display: none;
+    }
+
+    .navbar,
+    .action-buttons {
+        display: none !important;
+    }
+
+    .main-container {
+        max-width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .order-details-card {
+        box-shadow: none;
+        border-radius: 0;
+        page-break-inside: avoid;
+    }
+
+    .order-header {
+        background: none !important;
+        color: #000 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .line-item {
+        page-break-inside: avoid;
+    }
+
+    .line-item:hover {
+        transform: none;
+    }
+
+    .order-summary {
+        background: #f5f5f5 !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
+    .btn, .receipt-btn {
+        display: none !important;
+    }
 }
         
 .receipt-btn {
@@ -908,179 +1178,4 @@ mark {
         
 .receipt-btn.secondary:hover {
     background-color: #4b5563;
-}
-        
-.receipt-paper {
-    background: white;
-    border: 2px dashed #d1d5db;
-    padding: 30px;
-    font-family: 'Courier New', monospace;
-    font-size: 14px;
-    line-height: 1.4;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-    position: relative;
-}
-
-
-.receipt-paper::before {
-    top: -12px;
-}
-        
-.receipt-paper::after {
-    bottom: -12px;
-}
-        
-.receipt-top {
-    text-align: center;
-    margin-bottom: 25px;
-    border-bottom: 1px dashed #6b7280;
-    padding-bottom: 15px;
-}
-        
-.receipt-logo {
-    font-size: 28px;
-    font-weight: bold;
-    margin-bottom: 8px;
-}
-        
-.receipt-type {
-    font-size: 16px;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #374151;
-}
-        
-.receipt-thanks {
-    font-size: 12px;
-    color: #6b7280;
-}
-        
-.order-details {
-    margin-bottom: 20px;
-}
-        
-.order-details div {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: 5px;
-    align-items: center;
-}
-        
-.order-details span:first-child {
-    color: #6b7280;
-}
-        
-.order-details span:last-child {
-    color: #374151;
-    font-weight: 500;
-}
-        
-.receipt-items {
-    margin-bottom: 20px;
-}
-        
-.receipt-items-title {
-    font-weight: bold;
-    margin-bottom: 10px;
-    text-transform: uppercase;
-    border-bottom: 1px solid #6b7280;
-    padding-bottom: 5px;
-    color: #374151;
-}
-        
-.receipt-line-item {
-    margin-bottom: 15px;
-}
-        
-.item-primary {
-    display: flex;
-    justify-content: space-between;
-    font-weight: bold;
-    margin-bottom: 5px;
-    color: #111827;
-}
-        
-.item-variant {
-    font-size: 12px;
-    color: #6b7280;
-    margin-left: 0;
-    font-weight: normal;
-}
-        
-.item-addon {
-    margin-left: 20px;
-    font-size: 12px;
-    color: #6b7280;
-    display: flex;
-    justify-content: space-between;
-}
-        
-.receipt-summary {
-    border-top: 2px solid #374151;
-    padding-top: 15px;
-    margin-top: 20px;
-}
-        
-.receipt-total {
-    display: flex;
-    justify-content: space-between;
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 15px;
-    color: #111827;
-}
-        
-.receipt-footer {
-    text-align: center;
-    font-size: 12px;
-    margin-top: 20px;
-    color: #6b7280;
-}
-        
-.receipt-divider {
-    margin: 10px 0;
-    color: #d1d5db;
-}
-        
-.receipt-farewell {
-    margin-top: 10px;
-    color: #374151;
-}
-        
-.order-error {
-    text-align: center;
-    color: #dc2626;
-    font-size: 18px;
-    margin: 50px 0;
-    background: #fef2f2;
-    padding: 20px;
-    border-radius: 10px;
-    border: 1px solid #fecaca;
-}
-        
-@media print {
-    @page {
-        size: 80mm auto; 
-        margin: 0;       
-    }
-    .receipt-actions,
-    .navbar {
-        display: none !important;
-    }
-    .receipt-paper {
-        box-shadow: none;
-        border: 1px solid #000;
-        margin: 0;
-    }
-    .main-container {
-        margin: 0;
-        padding: 0;
-    }
-    body {
-        background: white;
-        margin: 0;
-        padding: 0;
-    }
 }

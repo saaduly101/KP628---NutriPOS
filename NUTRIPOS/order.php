@@ -21,18 +21,21 @@ $order_data = null;
 $line_items = [];
 $error_message = null;
 
+
 // Check if 'order' parameter exists
 if (isset($_GET['order'])) {
     $order = $_GET['order'];
 
     $result = $conn->query("SELECT 
         o.id AS order_id, 
-        o.closed_at, 
+        TIME(o.closed_at) AS order_time,
+        DATE(o.closed_at) AS order_date, 
         o.total, 
+        oli.id AS line_item_id,
         li.line_item_catalog_object_id, 
         li.name AS line_item_name, 
         li.variation_name,
-        /* li.sku, */
+        cm.sku AS sku,
         oli.quantity AS line_item_quantity, 
         m.name AS modifier_name, 
         olim.quantity AS modifier_quantity 
@@ -40,34 +43,48 @@ if (isset($_GET['order'])) {
     JOIN order_line_items oli ON o.id = oli.order_id 
     JOIN line_items li ON oli.line_item_catalog_object_id = li.line_item_catalog_object_id 
     LEFT JOIN order_line_item_modifiers olim ON oli.id = olim.order_line_item_id 
-    LEFT JOIN modifiers m ON olim.modifier_id = m.id 
-    WHERE o.id ='" . $order . "'");
+    LEFT JOIN modifiers m ON olim.modifier_id = m.id
+    LEFT JOIN catalog_map cm ON cm.catalog_object_id = li.line_item_catalog_object_id    
+    WHERE o.id ='" . $order . "'
+    ORDER BY oli.id, m.name"
+    );
     
     $current_line_item = null;
     $line_item_index = -1;
+
+    //Date format helper
+    function formatDate($date) {
+        return date('l, F j, Y', strtotime($date));
+    }
+
+    //Time format
+    function formatTime($datetime) {
+        return date('h:i A', strtotime($datetime));
+    }
     
     while ($row = $result->fetch_assoc()) {
         if ($order_data === null) {
             $order_data = [
                 'id' => $row['order_id'],
-                'closed_at' => $row['closed_at'],
+                'order_date' => formatDate($row['order_date']),
+                'order_time' => formatTime($row['order_time']),
                 'total' => $row['total'],
-                'line_items' => []
             ];
         }
 
         // If this is a new line item
-        if ($current_line_item !== $row['line_item_catalog_object_id']) {
-            // Add a blank line between items
-            $current_line_item = $row['line_item_catalog_object_id'];
+        if ($current_line_item !== $row['line_item_id']) {  
+            $current_line_item = $row['line_item_id'];
             $line_item_index++;
-
+        
             $line_items[$line_item_index] = [
-                'catalog_id' => $row['line_item_catalog_object_id'],
-                'name' => $row['line_item_name'],
+                'line_item_id'   => (int)$row['line_item_id'],
+                'catalog_id'     => $row['line_item_catalog_object_id'],
+                'name'           => $row['line_item_name'],
                 'variation_name' => $row['variation_name'],
-                'quantity' => $row['line_item_quantity'],
-                'modifiers' => []
+                'sku'            => $row['sku'] ?? null,
+                'quantity'       => (int)$row['line_item_quantity'],
+                'modifiers'      => []
             ];
         }
         
@@ -75,7 +92,7 @@ if (isset($_GET['order'])) {
         if (!empty($row['modifier_name'])) {
             $line_items[$line_item_index]['modifiers'][] = [
                 'name' => $row['modifier_name'],
-                'quantity' => $row['modifier_quantity']
+                'quantity' => (int)($row['modifier_quantity'] ?? 1)
             ];
         }
     }
@@ -86,15 +103,20 @@ if (isset($_GET['order'])) {
 } else {
     $error_message = "No order ID provided.";
 }
+
 mysqli_close($conn);
 ?>
-<DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
     <link rel="stylesheet" href="./public/style.css">
+    <style> 
+
+
+    </style>
 </head>
 <body>
     <?php if ($error_message): ?>
@@ -110,7 +132,7 @@ mysqli_close($conn);
           <ul class="navbar-links">
             <li><a href="../public/custom_pos_builder.html" class="nav-button">Menu Builder</a></li>
             <li><a href="../public/products.html" class="nav-button">Menu Management</a></li>
-            <li><a href="../db/mysql_orders.php" class="nav-button active">Order History</a></li>
+            <li><a href="db/mysql_orders.php" class="nav-button active">Order History</a></li>
           </ul>
           <div class="user-section">
             <span class="admin">admin@nutripos.local</span>
@@ -126,72 +148,113 @@ mysqli_close($conn);
                 <a href="./db/mysql_orders.php" class="receipt-btn primary">← Back to Order History</a>
             </div>
         <?php else: ?>
-
-            <!-- receipt  -->
-            <div class="receipt-wrapper">
-                <div class="receipt-paper">
-
-                    <!-- Receipt Header -->
-                    <div class="receipt-top">
-                        <div class="receipt-logo">NutriPOS</div>
-                        <div class="receipt-type">Order Receipt</div>
-                        <div class="receipt-thanks">Thank you for your order!</div>
-                    </div>
-
-                    <!-- Order info -->
-                    <div class="order-details">
-                        <div>
-                            <span>Order #:</span>
-                            <span><?php echo htmlspecialchars($order_data['id']); ?></span>
+            <div class="order-details-card">
+                <!-- Order Header -->
+                <div class="order-header">
+                    <h2 class="order-title">📋 Order Details</h2>
+                    <div class="order-meta">
+                        <div class="meta-item">
+                            <span class="meta-label">Order ID</span>
+                            <span class="meta-value order-id-value"><?php echo htmlspecialchars($order_data['id']); ?></span>
                         </div>
-                        <div>
-                            <span>Date & Time:</span>
-                            <span><?php echo $order_data['closed_at']; ?></span>
+                        <div class="meta-item">
+                            <span class="meta-label">Date & Time</span>
+                            <span class="meta-value"><?php echo htmlspecialchars($order_data['order_date']); ?></span>
+                            <span class="meta-value"><?php echo htmlspecialchars($order_data['order_time']); ?></span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Payment Method</span>
+                            <span class="meta-value">Card</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Status</span>
+                            <span class="meta-value">Completed</span>
+                        </div>
+                        <div class="meta-item">
+                            <span class="meta-label">Total Amount</span>
+                            <span class="meta-value" style="color: #10B981; font-size: 20px;">
+                                <?php echo htmlspecialchars($order_data['total']); ?>
+                            </span>
                         </div>
                     </div>
-
-                    <!-- detail -->
-                    <div class="receipt-items">
-                        <div class="receipt-items-title">Items Ordered</div>
-                        
-                        <?php foreach ($line_items as $item): ?>
-                            <div class="receipt-line-item">
-                                <div class="item-primary">
-                                    <span>
-                                        <?php echo $item['quantity']; ?>x <?php echo htmlspecialchars($item['name']); ?>
-                                        <?php if (!empty($item['variation_name'])): ?>
-                                            <div class="item-variant">(<?php echo htmlspecialchars($item['variation_name']); ?>)</div>
-                                        <?php endif; ?>
-                                    </span>
-                                </div>
-                                
-                                <?php foreach ($item['modifiers'] as $modifier): ?>
-                                    <div class="item-addon">
-                                        <span>+ <?php echo htmlspecialchars($modifier['name']); ?></span>
-                                        <?php if ($modifier['quantity'] > 1): ?>
-                                            <span>(<?php echo $modifier['quantity']; ?>x)</span>
-                                        <?php endif; ?>
+                    <hr>
+                </div>
+                
+                <!-- Order Content -->
+                <div class="order-content">
+                    <h3 class="section-title">Order Items</h3>
+                    
+                    <?php if (empty($line_items)): ?>
+                        <div class="no-items">
+                            <p>No items found for this order.</p>
+                        </div>
+                    <?php else: ?>
+                        <div class="items-list">
+                            <?php foreach ($line_items as $item): ?>
+                                <div class="line-item">
+                                    <div class="item-main">
+                                        <div class="item-details">
+                                            <div class="item-name">
+                                                <?php echo htmlspecialchars($item['name']); ?>
+                                            </div>
+                                            <?php if (!empty($item['variation_name'])): ?>
+                                                <div class="item-variation">
+                                                    <?php echo htmlspecialchars($item['variation_name']); ?>
+                                                </div>
+                                            <?php endif; ?>
+                                        </div>
+                                        <span class="item-quantity">
+                                            x<?php echo htmlspecialchars($item['quantity']); ?>
+                                        </span>
                                     </div>
-                                <?php endforeach; ?>
-                            </div>
-                        <?php endforeach; ?>
-                    </div>
-
-                    <!-- total price -->
-                    <div class="receipt-summary">
-                        <div class="receipt-total">
-                            <span>TOTAL:</span>
-                            <span><?php echo htmlspecialchars($order_data['total']); ?></span>
+                                    
+                                    <?php if (!empty($item['modifiers'])): ?>
+                                        <div class="item-modifiers">
+                                            <?php foreach ($item['modifiers'] as $modifier): ?>
+                                                <div class="modifier">
+                                                    <span><?php echo htmlspecialchars($modifier['name']); ?></span>
+                                                    <?php if ($modifier['quantity'] > 1): ?>
+                                                        <span class="modifier-quantity">
+                                                            <?php echo $modifier['quantity']; ?>x
+                                                        </span>
+                                                    <?php endif; ?>
+                                                </div>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            <?php endforeach; ?>
                         </div>
-                        
-                        <div class="receipt-footer">
-                            <div>Payment Method: Card</div>
-                            <div class="receipt-divider">━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━</div>
-                            <div class="receipt-farewell">Have a great day! 😊</div>
+                    <?php endif; ?>
+
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <div class="summary-row">
+                            <span class="summary-label">Items (<?php echo count($line_items); ?>)</span>
+                            <span class="summary-value">
+                                <?php 
+                                $total_items = 0;
+                                foreach ($line_items as $item) {
+                                    $total_items += $item['quantity'];
+                                }
+                                echo $total_items . ' items';
+                                ?>
+                            </span>
+                        </div>
+                        <div class="summary-row">
+                            <span class="summary-label">Payment Method</span>
+                            <span class="summary-value">Card Payment</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span class="summary-label">Total Amount</span>
+                            <span class="summary-value">
+                                <?php echo htmlspecialchars($order_data['total']); ?>
+                            </span>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- print and return button -->
             <div class="receipt-actions">
