@@ -52,14 +52,7 @@ $client = new SquareClient(
     ]
 );
 
-// Add near the top (after $client is created):
 
-/**
- * Look up a Square Catalog object (ITEM_VARIATION) and return its SKU.
- * @return string|null
- */
-//  * Look up a Square Catalog object (ITEM_VARIATION) and return its SKU.
- 
  function fetchSkuForCatalogObject(SquareClient $client, string $catalogObjectId): ?string {
     try {
         $catalogApi = $client->getCatalogApi();
