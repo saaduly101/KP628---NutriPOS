@@ -52,6 +52,38 @@ $client = new SquareClient(
     ]
 );
 
+// Add near the top (after $client is created):
+
+/**
+ * Look up a Square Catalog object (ITEM_VARIATION) and return its SKU.
+ * @return string|null
+ */
+//  * Look up a Square Catalog object (ITEM_VARIATION) and return its SKU.
+ 
+ function fetchSkuForCatalogObject(SquareClient $client, string $catalogObjectId): ?string {
+    try {
+        $catalogApi = $client->getCatalogApi();
+        $resp = $catalogApi->retrieveCatalogObject($catalogObjectId, true); // include_related
+        if ($resp->isSuccess()) {
+            $obj = $resp->getResult()->getObject();
+            if ($obj && $obj->getType() === 'ITEM_VARIATION') {
+                $iv = $obj->getItemVariationData();
+                if ($iv && $iv->getSku()) {
+                    return $iv->getSku();
+                }
+            }
+        } else {
+            // Log Square errors
+            $errors = $resp->getErrors();
+            if ($errors) error_log("Square Catalog error: " . json_encode($errors));
+        }
+    } catch (\Throwable $e) {
+        error_log("fetchSkuForCatalogObject() failed: " . $e->getMessage());
+    }
+    return null;
+}
+
+
 $signatureKey    = $squareWebhookSignatureKey;
 $notificationUrl = $_ENV["SQUARE_NOTIFICATION_URL"];
 $signatureHeader = $_SERVER['HTTP_X_SQUARE_HMACSHA256_SIGNATURE'] ?? '';
@@ -131,6 +163,18 @@ if (hash_equals($computed, $signatureHeader)) {
         $line_item_stmt = $conn->prepare("INSERT IGNORE INTO line_items (line_item_catalog_object_id, name, variation_name) VALUES (?, ?, ?)");
         $order_line_item_stmt = $conn->prepare("INSERT INTO order_line_items (order_id, line_item_catalog_object_id, quantity) VALUES (?, ?, ?)");
         
+        $catalog_map_stmt = $conn->prepare("
+        INSERT INTO catalog_map (catalog_object_id, sku, name)
+        VALUES (?, ?, ?, ?)
+        ON DUPLICATE KEY UPDATE
+            sku = VALUES(sku),
+            name = VALUES(name)
+        ");
+        if (!$catalog_map_stmt) {
+            error_log('Prepare catalog_map_stmt failed: '.$conn->error);
+        }
+
+        
         foreach($response['order']['line_items'] as $line_item) {
             $line_item_stmt->bind_param("sss", 
                 $line_item['catalog_object_id'], 
@@ -201,6 +245,9 @@ if (hash_equals($computed, $signatureHeader)) {
             $modifier_check_stmt->close();
             $modifier_insert_stmt->close();
             $order_line_item_modifier_stmt->close();
+            
+            if ($catalog_map_stmt) $catalog_map_stmt->close();
+            
         }
         $line_item_stmt->close();
         $order_line_item_stmt->close();
