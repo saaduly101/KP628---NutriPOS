@@ -84,6 +84,7 @@ tbody {
     width: 100%;
     top: 0;
     left: 0;
+    z-index: 1000000000;
 }
 
 .navbar-container {
@@ -275,7 +276,216 @@ td button:hover {
     color: white;
 }
 
-/* Menu builder styles */
+/* --------------Menu builder styles-------------------- */
+.nutripos-builder-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    padding: 30px;
+    margin: 0 auto 30px auto;
+    max-width: 960px;
+}
+
+#productName {
+    height: fit-content;
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.3s ease;
+    min-width: 300px;
+}
+
+#productName:focus {
+    outline: none;
+    border-color: #DBEAFE;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.button-container {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: -20px;
+}
+
+.button-container:has(#productName) {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    flex-wrap: nowrap;
+}
+
+.button-container #productName {
+    flex: 2;
+    min-width: 0; 
+}
+
+.button-container #addRow {
+    flex: 1;
+    min-width: 0; 
+}
+
+.button-container .btn:not(#addRow),
+.button-container button:not(#addRow),
+.button-container a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    vertical-align: middle;
+    line-height: 1;
+    margin: 0;
+}
+
+.btn.ghost.nutripos-add-ingredient-btn {
+    background: #DBEAFE;
+    color: #1D4ED8;
+    border: 1px solid #DBEAFE;
+    padding: 12px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    height: 44px;
+    box-sizing: border-box;
+}
+
+.btn.ghost.nutripos-add-ingredient-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(133, 179, 240, 0.3);
+}
+
+
+.nutripos-action-buttons {
+    justify-content: flex-start;
+    margin-top: 20px;
+    margin-bottom: 0;
+}
+
+
+.btn.primary.nutripos-btn-primary {
+    background: #2ed573;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 44px;
+    box-sizing: border-box;
+}
+
+.btn.primary.nutripos-btn-primary:hover {
+    background: #26c464;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 213, 115, 0.3);
+}
+
+
+.btn.ghost.nutripos-btn-secondary {
+    background: #f8f9fa;
+    color: #6c757d;
+    border: 1px solid #dee2e6;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    height: 44px;
+    box-sizing: border-box;
+}
+
+.btn.ghost.nutripos-btn-secondary:hover {
+    background: #e9ecef;
+    color: #5a6268;
+    text-decoration: none;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Muted text styling */
+.muted {
+    color: #6c757d;
+    font-size: 14px;
+    font-style: italic;
+    margin: 15px auto;
+    display: block;
+    text-align: center;
+    max-width: 960px;
+    padding: 0 16px;
+}
+
+/* Flex container for email input */
+.flex {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    margin: 0 auto 20px auto;
+    max-width: 960px;
+    padding: 0 16px;
+    flex-wrap: wrap;
+}
+
+.flex label.muted {
+    min-width: 180px;
+    margin: 0;
+    display: block;
+    text-align: left;
+    font-style: normal;
+}
+
+/* Email input styling */
+#custEmail {
+    flex: 1;
+    min-width: 250px;
+    padding: 12px;
+    border: 2px solid #e1e8ed;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: border-color 0.3s ease;
+}
+
+#custEmail:focus {
+    outline: none;
+    border-color: #8abaf1;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* Create Order button */
+#createOrderBtn.btn.primary {
+    margin-top: 20px;
+    background: #2ed573;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+#createOrderBtn.btn.primary:hover {
+    background: #26c464;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(46, 213, 115, 0.3);
+}
+
+/* QR Code container */
+#qrcode {
+    margin: 20px auto;
+    text-align: center;
+    max-width: 960px;
+    padding: 0 16px;
+}
+
+
+/* -===========================----------------------- */
 .product-name-input {
     padding: 8px;
     font-size: 14px;

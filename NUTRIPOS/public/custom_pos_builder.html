@@ -29,47 +29,35 @@
 
   <h2>NutriPOS – Custom Product Builder</h2>
 
-
-  <div class="flex">
-    <input id="productName" placeholder="Product name e.g. Beef Burger" style="flex:1;padding:8px" />
-    <button id="saveBtn" class="btn primary">Save Product</button>
-    <a class="btn ghost" href="products.html">View Saved Products</a>
-  </div>
-  <p class="muted">Type to search AFCD. Suggestions include code, category and nutrients. Click to fill the code automatically.</p>
-
-  <table id="grid" class="grid under">
-    <thead>
-      <tr>
-        <th>Ingredient Name</th>
-        <th>AFCD Code (optional)</th>
-        <th>Notes</th>
-        <th>Weight (g)</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id = "ingredients" class="ingredients">
-      <!-- Ingredient rows will go here -->
-    </tbody>
-  </table>
   
-  
-  <!-- <div id = "grid" class="grid" style="font-weight:bold; margin-top:10px">
-    <div>Ingredient Name</div>
-    <div>AFCD Code (optional)</div>
-    <div>Notes</div>
-    <div>Weight (g)</div>
-    <div></div>
+  <div class="nutripos-builder-container">
+    <div class="button-container">
+      <input id="productName" placeholder="Product name e.g. Beef Burger"/>
+      <button id="addRow" class="btn ghost nutripos-add-ingredient-btn">+ Add Ingredient</button>
+    </div>
+    <table id="grid" class="grid under nutripos-ingredients-table">
+      <thead>
+        <tr>
+          <th>Ingredient Name</th>
+          <th>AFCD Code (optional)</th>
+          <th>Notes</th>
+          <th>Weight (g)</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id = "ingredients" class="ingredients">
+        <!-- Ingredient rows will go here -->
+      </tbody>
+    </table>
+    <div class="button-container nutripos-action-buttons">
+      <button id="calcBtn" class="btn primary nutripos-btn-primary">Calculate Nutrition</button>
+      <button id="saveBtn" class="btn primary nutripos-btn-primary">Save Product</button>
+      <a class="btn ghost nutripos-btn-secondary" href="products.html">View Saved Products</a>
+    </div>
   </div>
-  <div id="ingredients" class="ingredients"></div> -->
+  <span class="muted">Tip: leave AFCD code empty and just type names—we'll smart-match.</span>
 
-
-  <div class="flex" style="margin-top:8px">
-    <button id="addRow" class="btn ghost">+ Add Ingredient</button>
-    <button id="calcBtn" class="btn primary">Calculate Nutrition</button>
-    <span class="muted">Tip: leave AFCD code empty and just type names—we’ll smart-match.</span>
-  </div>
-
-    <div id="qrcode"></div>
+  <div id="qrcode" style="display: none;"></div>
 
   <div id="result" class="totals" style="display:none"></div>
   <div class="hr"></div>
@@ -92,31 +80,31 @@
   <script src="custom_pos_builder.js"></script>
 
   <script>
-function generateNutritionQR(totals){
-  // Stringify nicely for scanning
-  const payload = `
-  Energy: ${totals["Energy (kJ)"]} kJ (${totals["Calories (kcal)"]} kcal)
-  Protein: ${totals["Protein (g)"]} g
-  Fat: ${totals["Fat (g)"]} g
-  Carbohydrate: ${totals["Carbohydrate (g)"]} g
-  Sugars: ${totals["Sugars (g)"]} g
-  Sodium: ${totals["Sodium (mg)"]} mg
-  `;
-}
+  function generateNutritionQR(totals){
+    // Stringify nicely for scanning
+    const payload = `
+    Energy: ${totals["Energy (kJ)"]} kJ (${totals["Calories (kcal)"]} kcal)
+    Protein: ${totals["Protein (g)"]} g
+    Fat: ${totals["Fat (g)"]} g
+    Carbohydrate: ${totals["Carbohydrate (g)"]} g
+    Sugars: ${totals["Sugars (g)"]} g
+    Sodium: ${totals["Sodium (mg)"]} mg
+    `;
+  }
 
-// Example usage after calculating:
-const totals = {
-  "Energy (kJ)": 4221.7,
-  "Calories (kcal)": 1009.0,
-  "Protein (g)": 35.91,
-  "Fat (g)": 84.43,
-  "Carbohydrate (g)": 27.29,
-  "Sugars (g)": 12.04,
-  "Sodium (mg)": 836
-};
-generateNutritionQR(totals);
+  // Example usage after calculating:
+  const totals = {
+    "Energy (kJ)": 4221.7,
+    "Calories (kcal)": 1009.0,
+    "Protein (g)": 35.91,
+    "Fat (g)": 84.43,
+    "Carbohydrate (g)": 27.29,
+    "Sugars (g)": 12.04,
+    "Sodium (mg)": 836
+  };
+  generateNutritionQR(totals);
 
-</script>
+  </script>
 
-</body>
+  </body>
 </html>
