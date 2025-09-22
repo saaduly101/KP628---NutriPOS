@@ -5,7 +5,7 @@ $error = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST'){
   $ok = auth_login($_POST['email'] ?? '', $_POST['password'] ?? '');
   if ($ok){
-    header(header: 'Location: dashboard.php');
+    header(header: 'Location: ../public/products.php');
     exit;
     
   }

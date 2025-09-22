@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__.'/../backend/auth.php';
+auth_require_admin();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,12 +23,12 @@
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
-        <li><a href="custom_pos_builder.html" class="nav-button">Menu Builder</a></li>
-        <li><a href="products.html" class="nav-button active">Menu Management</a></li>
+        <li><a href="custom_pos_builder.php" class="nav-button">Menu Builder</a></li>
+        <li><a href="products.php" class="nav-button active">Menu Management</a></li>
         <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
       </ul>
       <div class="user-section">
-        <span class="admin">Admin</span>
+        <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
         <button class="logout-btn">Logout</button>
       </div>
     </div>
@@ -33,10 +37,15 @@
   <h2>Saved Products</h1>
   <a href="custom_pos_builder.html" class="btn">+ Create New</a>
   <table>
-    <thead><tr><th>Name</th><th>Updated</th><th>Actions</th></tr></thead>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Updated</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
     <tbody id="list"></tbody>
   </table>
-  <script src="custom_pos_builder.js"></script>
   <script src="products.js"></script>
 
   <script>

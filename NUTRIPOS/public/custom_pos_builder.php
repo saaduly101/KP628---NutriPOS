@@ -1,3 +1,7 @@
+<?php
+require_once __DIR__.'/../backend/auth.php';
+auth_require_admin();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,12 +20,12 @@
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
-        <li><a href="custom.html" class="nav-button active">Menu Builder</a></li>
-        <li><a href="products.html" class="nav-button">Menu Management</a></li>
+        <li><a href="custom.php" class="nav-button active">Menu Builder</a></li>
+        <li><a href="products.php" class="nav-button">Menu Management</a></li>
         <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
       </ul>
       <div class="user-section">
-        <span class="admin">Admin</span>
+        <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
         <a href="../NUTRIPOS/admin/logout.php"><button class="logout-btn">Logout</button></a>
       </div>
     </div>
@@ -52,7 +56,7 @@
     <div class="button-container nutripos-action-buttons">
       <button id="calcBtn" class="btn primary nutripos-btn-primary">Calculate Nutrition</button>
       <button id="saveBtn" class="btn primary nutripos-btn-primary">Save Product</button>
-      <a class="btn ghost nutripos-btn-secondary" href="products.html">View Saved Products</a>
+      <a class="btn ghost nutripos-btn-secondary" href="products.php">View Saved Products</a>
     </div>
   </div>
   <span class="muted">Tip: leave AFCD code empty and just type names—we'll smart-match.</span>

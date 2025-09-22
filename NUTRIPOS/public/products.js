@@ -101,7 +101,7 @@ async function listProducts(){
       <td>${p.name}</td>
       <td>${new Date(p.updated_at).toLocaleString()}</td>
       <td>
-        <a class="btn" href="custom_pos_builder.html#${p.id}">Edit</a>
+        <a class="btn" href="custom_pos_builder.php#${p.id}">Edit</a>
         <button class="btn danger" data-id="${p.id}">Delete</button>
       </td>`;
     tr.querySelector('button').onclick = async (e)=>{
