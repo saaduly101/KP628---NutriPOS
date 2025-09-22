@@ -1091,11 +1091,11 @@ mark {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 30px;
+    margin-top: 80px;
 }
 
 .order-header {
     padding: 30px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .order-header h2 {
@@ -1317,9 +1317,16 @@ mark {
 
 /* Print Styles */
 @media print {
+    * {
+        color: black !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+
     body {
         background: white;
         padding: 0;
+        color: black !important;
     }
 
     body::before {
@@ -1341,16 +1348,19 @@ mark {
         box-shadow: none;
         border-radius: 0;
         page-break-inside: avoid;
+        margin: 0;
     }
 
     .order-header {
         background: none !important;
         color: #000 !important;
-        -webkit-print-color-adjust: exact;
         print-color-adjust: exact;
     }
 
     .line-item {
+        background: #ffffff !important;
+        box-shadow: none;
+        border: none;
         page-break-inside: avoid;
     }
 
@@ -1358,10 +1368,13 @@ mark {
         transform: none;
     }
 
+    .item-quantity {
+        background: #ffffff !important;
+        border: none;
+    }
+
     .order-summary {
         background: #f5f5f5 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
     }
 
     .btn, .receipt-btn {
