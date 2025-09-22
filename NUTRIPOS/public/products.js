@@ -95,15 +95,36 @@ async function listProducts(){
   const res = await fetch('../backend/products_list.php');
   const data = await res.json();
   tb.innerHTML = '';
+   
   (data.products||[]).forEach(p=>{
+    const ingredients = p.ingredients || [];
+
+    let ingredientsHtml = '';
+    if (ingredients.length > 0) {
+      // Show first 3 ingredients, each on its own row
+      ingredients.slice(0, 3).forEach(i => {
+        ingredientsHtml += `<div class="ingredient-items">${i.name}${i.grams ? `  (${i.grams}g)` : ''}</div>`;
+      });
+
+      // Add summary if there are more
+      if (ingredients.length > 3) {
+        ingredientsHtml += `<div style="color:#666;">+${ingredients.length - 3} more ingredients</div>`;
+      }
+    } else {
+      ingredientsHtml = '<div style="color:#666;">No ingredients</div>';
+    } 
+
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${p.name}</td>
+      <td><a href="custom_pos_builder.php#${p.id}" style="color: black">${p.name}</a></td>
+      <td class="product-ingredients">
+        ${ingredientsHtml}
+      </td>
       <td>${new Date(p.updated_at).toLocaleString()}</td>
       <td>
-        <a class="btn" href="custom_pos_builder.php#${p.id}">Edit</a>
-        <button class="btn danger" data-id="${p.id}">Delete</button>
-      </td>`;
+        <button type="button" class="btn danger del" data-id="${p.id}">Delete</button>
+      </td>
+    `;
     tr.querySelector('button').onclick = async (e)=>{
       const id = e.target.getAttribute('data-id');
       if (!confirm('Delete this product?')) return;

@@ -25,7 +25,7 @@ function rowTemplate(data = {}) {
   // remove row
   tr.querySelector('.del').onclick = () => tr.remove();
 
-  // --- autocomplete wiring (same behavior, just living inside a <td>) ---
+  
   const nameInput = tr.querySelector('.name');
   const codeInput = tr.querySelector('.code');
   const list = tr.querySelector('.ac-list');

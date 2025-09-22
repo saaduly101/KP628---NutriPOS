@@ -144,7 +144,7 @@ mysqli_close($conn);
         </div>
     </nav>
     
-    <div class="main-container" style="padding: 20px;">
+    <div>
         <?php if ($error_message): ?>
             <div class="order-error">
                 <h2>❌ <?php echo htmlspecialchars($error_message); ?></h2>

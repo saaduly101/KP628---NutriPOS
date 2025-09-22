@@ -168,9 +168,52 @@
                     "afcd_code": "F008969",
                     "notes": "",
                     "grams": 20
+                },
+                {
+                    "name": "Cream, thickened, regular fat (approximately 35%)",
+                    "afcd_code": "F003270",
+                    "notes": "",
+                    "grams": 30
                 }
             ],
-            "updated_at": "2025-08-16T07:03:46+00:00"
+            "updated_at": "2025-09-22T16:26:24+00:00"
+        },
+        {
+            "id": "63905c214ff18580",
+            "name": "New pepper burger",
+            "ingredients": [
+                {
+                    "name": "Tomato",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 30
+                },
+                {
+                    "name": "BBQ Sauce",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 15
+                },
+                {
+                    "name": "Mayonnaise",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 20
+                },
+                {
+                    "name": "Cheddar Cheese",
+                    "afcd_code": "",
+                    "notes": "",
+                    "grams": 30
+                },
+                {
+                    "name": "Pepper, black, ground",
+                    "afcd_code": "F006618",
+                    "notes": "",
+                    "grams": 10
+                }
+            ],
+            "updated_at": "2025-09-22T14:44:30+00:00"
         }
     ]
 }

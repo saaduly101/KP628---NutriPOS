@@ -220,9 +220,8 @@ h1 {
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 30px;
     background-color: white;
-    border-radius: 8px;
+    border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
@@ -279,7 +278,7 @@ td button:hover {
 /* --------------Menu builder styles-------------------- */
 .nutripos-builder-container {
     background: white;
-    border-radius: 12px;
+    border-radius: 24px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     padding: 30px;
     margin: 0 auto 30px auto;
@@ -308,7 +307,6 @@ td button:hover {
     gap: 12px;
     align-items: center;
     justify-content: center;
-    margin-bottom: -20px;
 }
 
 .button-container:has(#productName) {
@@ -543,6 +541,7 @@ table {
     width: 100%;
     border-collapse: collapse;
     overflow: visible !important;
+    border-radius: 20px;
 }
 
 th, td {
@@ -877,10 +876,20 @@ mark {
     align-items: center;
 }
 
+/* --------menu management -------- */
+.ingredient-items { 
+    background-color: #F3F4F6;
+    padding-left: 10px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    border-bottom: 3px solid white;
+    border-radius: 8px;
+}
+
 /* Order historu page */
 .main-container {
     max-width: 1120px;
-    margin: 120px auto 24px auto;
+    margin: 80px auto 24px auto;
     padding: 0 16px;
 }
 
@@ -911,9 +920,10 @@ mark {
     background: #F0FDF4;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
-    padding: 10px 15px;
     text-align: center;
     min-width: 140px;
+    padding-bottom: 6px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .stat-label {
@@ -1077,14 +1087,15 @@ mark {
 /* order page (receipt) */
 .order-details-card {
     background: white;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    border-radius: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 30px;
 }
 
 .order-header {
     padding: 30px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .order-header h2 {

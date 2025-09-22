@@ -29,27 +29,39 @@ auth_require_admin();
       </ul>
       <div class="user-section">
         <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
-        <button class="logout-btn">Logout</button>
+        <a href="../admin/logout.php"><button class="logout-btn">Logout</button></a>
       </div>
     </div>
   </nav>
 
-  <h2>Saved Products</h1>
-  <a href="custom_pos_builder.html" class="btn">+ Create New</a>
-  <table>
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Updated</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody id="list"></tbody>
-  </table>
-  <script src="products.js"></script>
+  <h2>NutriPOS – Saved Products</h2>
+  <div class="nutripos-builder-container">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Ingredients</th>
+          <th>Updated</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody id="list">
+        <tr>
+          <td colspan="4">Loading...</td>
+        </tr>
+      </tbody>
+    </table>
 
+    <div class="button-container nutripos-action-buttons">
+      <a href="custom_pos_builder.php" class="btn ghost nutripos-btn-secondary">+ Create New</a>
+    </div>
+  </div>  
+
+  <script src="products.js"></script>
   <script>
-    listProducts();
+    document.addEventListener('DOMContentLoaded', function() {
+      listProducts();
+    });
   </script>
 </body>
 </html>
