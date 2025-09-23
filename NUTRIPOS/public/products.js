@@ -122,7 +122,7 @@ async function listProducts(){
       </td>
       <td>${new Date(p.updated_at).toLocaleString()}</td>
       <td>
-        <button type="button" class="btn danger del" data-id="${p.id}">Delete</button>
+        <button type="button" class="btn danger del" data-id="${p.id}">Remove</button>
       </td>
     `;
     tr.querySelector('button').onclick = async (e)=>{

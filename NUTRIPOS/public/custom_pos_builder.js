@@ -19,7 +19,7 @@ function rowTemplate(data = {}) {
     </td>
     <td><input type="text" placeholder="AFCD Code e.g. F002893" class="code" value="${data.afcd_code || ''}"/></td>
     <td><input type="text" placeholder="Notes" class="notes" value="${data.notes || ''}"/></td>
-    <td><input type="number" min="0" step="0.1" class="grams" value="${data.grams || ''}"/></td>
+    <td><input type="number" min="0" step="0.1" class="grams" value="${data.grams || ''}" required/></td>
     <td><button type="button" class="btn danger del">Remove</button></td>
   `;
   // remove row

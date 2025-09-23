@@ -9,7 +9,18 @@ auth_require_admin();
   <title>NutriPOS – Custom Product Builder + POS Simulator</title>
   <link rel="stylesheet" href="style.css" />
   <style>
+    .builder-section {
+      display: flex;
+      gap: 24px;         
+    }
 
+    .builder-left {
+      flex: 2;           
+    }
+
+    .builder-right {
+      flex: 1;          
+}
   </style>
 </head>
 <body>
@@ -31,54 +42,71 @@ auth_require_admin();
     </div>
   </nav>
 
-  <h2>NutriPOS – Custom Product Builder</h2>
-
-  
-  <div class="nutripos-builder-container">
-    <div class="button-container">
-      <input id="productName" placeholder="Product name e.g. Beef Burger"/>
-      <button id="addRow" class="btn ghost nutripos-add-ingredient-btn">+ Add Ingredient</button>
+  <div class="main-container">
+    <div class="header">
+      <div class="title-section">
+        <h2>NutriPOS – Menu Management</h2>
+        <div class="subtitle">View, edit, or delete saved menu items.</div>
+      </div>
     </div>
-    <table id="grid" class="grid under nutripos-ingredients-table">
-      <thead>
-        <tr>
-          <th>Ingredient Name</th>
-          <th>AFCD Code (optional)</th>
-          <th>Notes</th>
-          <th>Weight (g)</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id = "ingredients" class="ingredients">
-        <!-- Ingredient rows will go here -->
-      </tbody>
-    </table>
-    <div class="button-container nutripos-action-buttons">
-      <button id="calcBtn" class="btn primary nutripos-btn-primary">Calculate Nutrition</button>
-      <button id="saveBtn" class="btn primary nutripos-btn-primary">Save Product</button>
-      <a class="btn ghost nutripos-btn-secondary" href="products.php">View Saved Products</a>
+
+    <div class="builder-section">
+      <div class="builder-left">
+        <div class="nutripos-builder-container">
+          <div class="button-container">
+            <input id="productName" placeholder="Product name e.g. Beef Burger"/>
+            <button id="addRow" class="btn ghost nutripos-add-ingredient-btn">+ Add Ingredient</button>
+          </div>
+          <table id="grid" class="grid under nutripos-ingredients-table">
+            <thead>
+              <tr>
+                <th>Ingredient Name</th>
+                <th>AFCD Code (optional)</th>
+                <th>Notes</th>
+                <th>Weight (g)</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id = "ingredients" class="ingredients">
+              <!-- Ingredient rows will go here -->
+            </tbody>
+          </table>
+          <div class="button-container nutripos-action-buttons">
+            <button id="calcBtn" class="btn primary nutripos-btn-primary">Calculate Nutrition</button>
+            <button id="saveBtn" class="btn primary nutripos-btn-primary">Save Product</button>
+            <a class="btn ghost nutripos-btn-secondary" href="products.php">View Saved Products</a>
+          </div>
+        </div>
+        <span class="muted">Tip: leave AFCD code empty and just type names—we'll smart-match.</span>
+
+        <div id="qrcode" style="display: none;"></div>
+
+        <div class="hr"></div>
+      </div>
+
+      <div class="builder-right">
+        <div class="nutripos-builder-container sidebar">
+          <div id="nutritionInfo">No data yet. Add ingredients and "Calculate Nutrition".</div>
+
+          <div id="orderResult" style="margin-top:12px"></div>
+          <div id="result" class="totals" style="display:none"></div>
+        </div>
+      </div>
     </div>
-  </div>
-  <span class="muted">Tip: leave AFCD code empty and just type names—we'll smart-match.</span>
-
-  <div id="qrcode" style="display: none;"></div>
-
-  <div id="result" class="totals" style="display:none"></div>
-  <div class="hr"></div>
-  
 
   <h2>POS Simulator (no payment)</h2>
   <p>Add customer email (optional) and “Create Order” to save, get a receipt link & QR. You can also email the receipt.</p>
-
-  
   <div class="flex">
     <label for="custEmail" class="muted">Customer Email (optional):</label>
     <input id="custEmail" value="customer@example.com" placeholder="customer@example.com" style="flex:1;padding:8px"/>
     <button id="createOrderBtn" class="btn primary">Create Order</button>
   </div>
-  
 
-  <div id="orderResult" style="margin-top:12px"></div>
+  </div>
+
+
+
+
 
   <script src="qrcode.js"></script>
   <script src="custom_pos_builder.js"></script>

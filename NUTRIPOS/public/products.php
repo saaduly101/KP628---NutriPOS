@@ -34,29 +34,36 @@ auth_require_admin();
     </div>
   </nav>
 
-  <h2>NutriPOS – Saved Products</h2>
-  <div class="nutripos-builder-container">
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Ingredients</th>
-          <th>Updated</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="list">
-        <tr>
-          <td colspan="4">Loading...</td>
-        </tr>
-      </tbody>
-    </table>
-
-    <div class="button-container nutripos-action-buttons">
-      <a href="custom_pos_builder.php" class="btn ghost nutripos-btn-secondary">+ Create New</a>
+  <div class="main-container">
+    <div class="header">
+      <div class="title-section">
+        <h2>NutriPOS – Menu Management</h2>
+        <div class="subtitle">View, edit, or delete saved menu items.</div>
+      </div>
     </div>
-  </div>  
 
+    <div class="nutripos-builder-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Ingredients</th>
+            <th>Updated</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="list">
+          <tr>
+            <td colspan="4">Loading...</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="button-container nutripos-action-buttons">
+        <a href="custom_pos_builder.php" class="btn ghost nutripos-btn-secondary">+ Create New</a>
+      </div>
+    </div>  
+  </div>
   <script src="products.js"></script>
   <script>
     document.addEventListener('DOMContentLoaded', function() {

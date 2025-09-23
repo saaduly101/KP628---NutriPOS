@@ -1,9 +1,9 @@
 body {
     font-family: system-ui, Arial, sans-serif;
-    max-width: 960px;
     margin: 24px auto;
     padding: 0 16px;
     background-color: #f8f9fa;
+    align-items: center;
 }
 
 /* ADDED BACKGROUND IMAGE */
@@ -24,24 +24,8 @@ body::before{
 }
 
 h1, h2, h3 {
-    margin-top: 80px;
     margin-bottom: 8px;
     color: #333;
-    font-size: 24px;
-}
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
-th, td {
-    padding: 8px;
-    border-bottom: 1px solid #eee;
-    text-align: left;
-}
-/* ADDED THIS */
-tbody {
-    text-align: left;
-    width: 100%;
 }
 
 .btn {
@@ -188,13 +172,6 @@ tbody {
     padding: 20px;
 }
 
-h1 {
-    margin-bottom: 8px;
-    text-align: center;
-    color: #333;
-    font-size: 2rem;
-}
-
 .description {
     text-align: center;
     color: #777;
@@ -222,7 +199,7 @@ table {
     border-collapse: collapse;
     background-color: white;
     border-radius: 20px;
-    overflow: hidden;
+    overflow: visible !important;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
@@ -280,9 +257,15 @@ td button:hover {
     background: white;
     border-radius: 24px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-    padding: 30px;
-    margin: 0 auto 30px auto;
-    max-width: 960px;
+    padding: 20px;
+}
+
+.nutripos-builder-container.sidebar {
+    background: #f9f9f9;
+    border-left: 1px solid #eee;
+    padding: 20px;
+    padding-top: 5px;
+    min-width: 300px;
 }
 
 #productName {
@@ -537,13 +520,6 @@ footer p {
 
 
 /*  Autocomplete CSS */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    overflow: visible !important;
-    border-radius: 20px;
-}
-
 th, td {
     border-bottom: 1px solid #eee;
     text-align: left;
@@ -888,7 +864,7 @@ mark {
 
 /* Order historu page */
 .main-container {
-    max-width: 1120px;
+    max-width: 1440px;
     margin: 80px auto 24px auto;
     padding: 0 16px;
 }
@@ -954,6 +930,8 @@ mark {
     margin-bottom: 15px;
     overflow: hidden;
 }
+
+
 
 .day-header {
     background: #f9fafb;
@@ -1092,6 +1070,7 @@ mark {
     overflow: hidden;
     margin-bottom: 30px;
     margin-top: 80px;
+    max-width: 960px;
 }
 
 .order-header {
