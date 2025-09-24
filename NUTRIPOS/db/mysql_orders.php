@@ -112,7 +112,6 @@ mysqli_close($conn);
   </nav>
 
   <div class="main-container">
-    <!-- Header with title and stats -->
     <div class="header">
       <div class="title-section">
         <h2>Order History</h2>
@@ -129,55 +128,57 @@ mysqli_close($conn);
         </div>
       </div>
     </div>
-    <!-- Orders grouped by day -->
-    <?php if (empty($orders)): ?>
-      <div class="no-orders">No orders yet.</div>
-    <?php else: ?>
-      <?php foreach ($orders as $date => $dayOrders): ?>
-          <?php 
-            $stats = getDailyStats($dayOrders);
-            $isToday = ($date == date('Y-m-d'));
-          ?>
-          <div class="day-section <?php echo $isToday ? 'open' : ''; ?>">
-            <div class="day-header" onclick="toggleDay(this.parentElement)">
-              <div class="day-left">
-                <div class="arrow"></div>
-                <div class="day-info">
-                  <h3><?php echo formatDate($date); ?></h3>
-                  <div class="day-meta">
-                    <?php echo $stats['orders']; ?> <?php echo $stats['orders'] == 1 ? 'order' : 'orders'; ?> · 
-                    <?php echo $stats['items']; ?> <?php echo $stats['items'] == 1 ? 'item sold' : 'items sold'; ?>
-                  </div>
-                </div>
-              </div>
-              <div class="day-total">
-                $<?php echo number_format($stats['total'], 2); ?> 
-                <p class="day-meta">Daily Total</p>
-              </div>
-            </div>
-            <div class="orders-list">
-              <?php foreach ($dayOrders as $order): ?>
-                <a href="../order.php?order=<?php echo urlencode($order['id']); ?>" class="order-item">
-                  <div class="order-left">
-                    <div class="order-icon">🧾</div>
-                    <div class="order-details">
-                      <h4>Order #<?php echo htmlspecialchars($order['id']); ?></h4>
-                      <div class="order-sub">
-                        <?php echo $order['item_count']; ?> <?php echo $order['item_count'] == 1 ? 'item' : 'items'; ?> · 
-                        <?php echo formatTime($order['closed_at']); ?>
-                      </div>
+
+    <div class="nutripos-builder-container">
+      <?php if (empty($orders)): ?>
+        <div class="no-orders">No orders yet.</div>
+      <?php else: ?>
+        <?php foreach ($orders as $date => $dayOrders): ?>
+            <?php 
+              $stats = getDailyStats($dayOrders);
+              $isToday = ($date == date('Y-m-d'));
+            ?>
+            <div class="day-section <?php echo $isToday ? 'open' : ''; ?>">
+              <div class="day-header" onclick="toggleDay(this.parentElement)">
+                <div class="day-left">
+                  <div class="arrow"></div>
+                  <div class="day-info">
+                    <h3><?php echo formatDate($date); ?></h3>
+                    <div class="day-meta">
+                      <?php echo $stats['orders']; ?> <?php echo $stats['orders'] == 1 ? 'order' : 'orders'; ?> · 
+                      <?php echo $stats['items']; ?> <?php echo $stats['items'] == 1 ? 'item sold' : 'items sold'; ?>
                     </div>
                   </div>
-                  <div class="order-right">
-                    <div class="order-total">$<?php echo number_format((float)$order['total'], 2); ?></div>
-                    <div class="payment-method">Card</div>
-                  </div>
-                </a>
-              <?php endforeach; ?>
+                </div>
+                <div class="day-total">
+                  $<?php echo number_format($stats['total'], 2); ?> 
+                  <p class="day-meta">Daily Total</p>
+                </div>
+              </div>
+              <div class="orders-list">
+                <?php foreach ($dayOrders as $order): ?>
+                  <a href="../order.php?order=<?php echo urlencode($order['id']); ?>" class="order-item">
+                    <div class="order-left">
+                      <div class="order-icon">🧾</div>
+                      <div class="order-details">
+                        <h4>Order #<?php echo htmlspecialchars($order['id']); ?></h4>
+                        <div class="order-sub">
+                          <?php echo $order['item_count']; ?> <?php echo $order['item_count'] == 1 ? 'item' : 'items'; ?> · 
+                          <?php echo formatTime($order['closed_at']); ?>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="order-right">
+                      <div class="order-total">$<?php echo number_format((float)$order['total'], 2); ?></div>
+                      <div class="payment-method">Card</div>
+                    </div>
+                  </a>
+                <?php endforeach; ?>
+              </div>
             </div>
-          </div>
-        <?php endforeach; ?>
-    <?php endif; ?>
+          <?php endforeach; ?>
+      <?php endif; ?>
+    </div>
   </div>
 
   <script>

@@ -122,6 +122,7 @@ async function listProducts(){
       </td>
       <td>${new Date(p.updated_at).toLocaleString()}</td>
       <td>
+        <a href="custom_pos_builder.php#${p.id}" style="color: black">Edit</a>
         <button type="button" class="btn danger del" data-id="${p.id}">Remove</button>
       </td>
     `;

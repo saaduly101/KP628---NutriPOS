@@ -8,20 +8,6 @@ auth_require_admin();
   <meta charset="UTF-8" />
   <title>NutriPOS – Custom Product Builder + POS Simulator</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    .builder-section {
-      display: flex;
-      gap: 24px;         
-    }
-
-    .builder-left {
-      flex: 2;           
-    }
-
-    .builder-right {
-      flex: 1;          
-}
-  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -80,19 +66,26 @@ auth_require_admin();
         <span class="muted">Tip: leave AFCD code empty and just type names—we'll smart-match.</span>
 
         <div id="qrcode" style="display: none;"></div>
-
-        <div class="hr"></div>
       </div>
 
       <div class="builder-right">
         <div class="nutripos-builder-container sidebar">
-          <div id="nutritionInfo">No data yet. Add ingredients and "Calculate Nutrition".</div>
-
+          <h3>Nutrition Totals</h3>
+          <div id="nutritionInfo">
+            <div class="calculator-icon">
+              <img src="../assets/calculator.png" alt="Calculator" style="width:48px; opacity:0.3;"/>
+            </div>
+            <div>
+              Click "Calculate Nutrition" when all ingredients are added!<br>
+              Nutrition values will appear here
+            </div>
+          </div>
           <div id="orderResult" style="margin-top:12px"></div>
           <div id="result" class="totals" style="display:none"></div>
         </div>
       </div>
     </div>
+  <div class="hr"></div>
 
   <h2>POS Simulator (no payment)</h2>
   <p>Add customer email (optional) and “Create Order” to save, get a receipt link & QR. You can also email the receipt.</p>

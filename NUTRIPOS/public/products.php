@@ -8,12 +8,6 @@ auth_require_admin();
   <meta charset="UTF-8" />
   <title>NutriPOS – Saved Products</title>
   <link rel="stylesheet" href="style.css" />
-  <style>
-    table { width:100%; border-collapse: collapse; }
-    th, td { padding: 8px; border-bottom: 1px solid #eee; text-align:left; }
-    .btn { padding:6px 10px; border:1px solid #ccc; border-radius:6px; background:#fff; cursor:pointer; }
-    .btn.danger { border-color:#e33; color:#e33; }
-  </style>
 </head>
 <body>
   <nav class="navbar">

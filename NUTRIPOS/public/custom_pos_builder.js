@@ -121,6 +121,7 @@ function rowTemplate(data = {}) {
 function addRow(data){ $('#ingredients').appendChild(rowTemplate(data)); }
 
 async function calculate(){
+  document.getElementById('nutritionInfo').style.display = 'none';
   const rows = [...document.querySelectorAll('#ingredients .row')];
   const ingredients = rows.map(r=> ({
     name: r.querySelector('.name').value.trim(),
@@ -139,17 +140,44 @@ async function calculate(){
   const t = data.totals;
   result.style.display='block';
   result.innerHTML = `
-    <h3>Nutrition Totals</h3>
-    <ul>
-      <li>Energy: ${t["Energy (kJ)"].toFixed(1)} kJ</li>
-      <li>Calories: ${t["Calories (kcal)"].toFixed(1)} kcal</li>
-      <li>Protein: ${t["Protein (g)"].toFixed(2)} g</li>
-      <li>Fat: ${t["Fat (g)"].toFixed(2)} g</li>
-      <li>Carbohydrate: ${t["Carbohydrate (g)"].toFixed(2)} g</li>
-      <li>Sugars: ${t["Sugars (g)"].toFixed(2)} g</li>
-      <li>Sodium: ${t["Sodium (mg)"].toFixed(0)} mg</li>
-    </ul>
-    <div class="muted">Matched: ${data.matches.join(', ')||'—'}</div>
+    <div class="nutrition-energy">
+      <span class="energy-label">Energy</span>
+      <span class="energy-value">${t["Energy (kJ)"].toFixed(0)} kJ</span>
+    </div>
+    
+    <div class="nutrition-macros">
+      <div class="macro-item protein">
+        <span class="macro-value">${t["Protein (g)"].toFixed(0)}g</span>
+        <span class="macro-label">Protein</span>
+      </div>
+      <div class="macro-item calories">
+        <span class="macro-value">${t["Calories (kcal)"].toFixed(0)} kcal</span>
+        <span class="macro-label">Calories</span>
+      </div>
+    </div>
+    
+    <div class="nutrition-details">
+      <div class="detail-row">
+        <span class="detail-label">Saturated Fat</span>
+        <span class="detail-value">${t["Fat (g)"] ? (t["Fat (g)"] * 0.3).toFixed(0) : 0}g</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Carbohydrates</span>
+        <span class="detail-value">${t["Carbohydrate (g)"].toFixed(0)}g</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Sugars</span>
+        <span class="detail-value">${t["Sugars (g)"].toFixed(0)}g</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Sodium</span>
+        <span class="detail-value">${t["Sodium (mg)"].toFixed(0)}mg</span>
+      </div>
+    </div>
+    
+    <div class="nutrition-footer">
+      <div class="muted">Matched: ${data.matches.join(', ')||'—'}</div>
+    </div>
   `;
   
 }

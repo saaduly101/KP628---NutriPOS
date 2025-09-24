@@ -116,10 +116,6 @@ mysqli_close($conn);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Order Details</title>
     <link rel="stylesheet" href="./public/style.css">
-    <style> 
-
-
-    </style>
 </head>
 <body>
     <?php if ($error_message): ?>
@@ -144,7 +140,7 @@ mysqli_close($conn);
         </div>
     </nav>
 
-    <div>
+    <div class="main-container" style="max-width: 960px"    >
         <?php if ($error_message): ?>
             <div class="order-error">
                 <h2>❌ <?php echo htmlspecialchars($error_message); ?></h2>
