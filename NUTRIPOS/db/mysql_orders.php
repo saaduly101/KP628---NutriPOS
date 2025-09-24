@@ -106,7 +106,7 @@ mysqli_close($conn);
       </ul>
       <div class="user-section">
         <span class="admin"><?php echo htmlspecialchars($_SESSION['email'] ?? 'admin'); ?></span>
-        <a href="../logout.php"><button class="logout-btn">Logout</button></a>
+        <a href="../admin/logout.php"><button class="logout-btn">Logout</button></a>
       </div>
     </div>
   </nav>

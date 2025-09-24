@@ -23,7 +23,7 @@ auth_require_admin();
       </ul>
       <div class="user-section">
         <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
-        <a href="../NUTRIPOS/admin/logout.php"><button class="logout-btn">Logout</button></a>
+        <a href="../admin/logout.php"><button class="logout-btn">Logout</button></a>
       </div>
     </div>
   </nav>
