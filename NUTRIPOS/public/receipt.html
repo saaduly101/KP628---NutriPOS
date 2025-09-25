@@ -36,92 +36,97 @@
 
   <script src="qr-code.min.js"></script>
   <script>
-  (function(){
-    const qs = new URLSearchParams(location.search);
-    const id = qs.get('id');
-    const fmt = (n, d=2) => {
-      const v = Number(n);
-      if (!isFinite(v)) return '0';
-      return v.toFixed(d);
-    };
-    const setText = (sel, text) => { const el = document.querySelector(sel); if (el) el.textContent = text; };
+(function(){
+  const qs = new URLSearchParams(location.search);
+  let id = (qs.get('id') || qs.get('order') || '').trim();
 
-    // UI buttons
-    document.getElementById('printBtn').onclick = () => window.print();
+  // Default to 'latest' if missing/invalid
+  if (!id || /^null|undefined$/i.test(id)) id = 'latest';
+  // Allow common url-safe tokens: letters, numbers, - _ = % .
+  if (id !== 'latest' && !/^[A-Za-z0-9._\-=%]+$/.test(id)) id = 'latest';
 
-    async function load(){
-      if (!id || !/^\d+$/.test(id)) {
-        document.body.innerHTML = '<div class="receipt"><p>Missing or invalid order id.</p></div>';
-        return;
-      }
-      let res, data;
-      try {
-        res = await fetch('../backend/orders_get.php?id='+encodeURIComponent(id), {cache:'no-store'});
-        data = await res.json();
-      } catch (e) {
-        document.body.innerHTML = '<div class="receipt"><p>Failed to load receipt.</p></div>';
-        return;
-      }
-      if (!data || data.error) {
-        document.body.innerHTML = '<div class="receipt"><p>'+(data?.error || 'Order not found')+'</p></div>';
-        return;
-      }
+  const fmt = (n, d=2) => (isFinite(+n) ? (+n).toFixed(d) : '0');
+  const setText = (sel, text) => { const el = document.querySelector(sel); if (el) el.textContent = text; };
 
-      const o = data.order || {};
-      const items = data.items || [];
+  document.getElementById('printBtn').onclick = () => window.print();
 
-      setText('#orderNo', '#'+o.id);
-      // created_at is stored in UTC (per backend). Show as ISO UTC.
-      setText('#createdAt', (o.created_at ? (o.created_at+' UTC') : ''));
-
-      // Nutrition summary (safe textContent)
-      const nutriEl = document.getElementById('nutri');
-      nutriEl.innerHTML = ''; // clear
-      const block = document.createElement('div');
-      block.innerHTML =
-        '<strong>Nutrition summary</strong><br/>' +
-        'Energy: ' + fmt(o.energy_kj,1) + ' kJ (' + fmt(o.calories_kcal,0) + ' kcal)<br/>' +
-        'Protein: ' + fmt(o.protein_g) + ' g, Fat: ' + fmt(o.fat_g) + ' g<br/>' +
-        'Carbs: ' + fmt(o.carb_g) + ' g, Sugars: ' + fmt(o.sugars_g) + ' g<br/>' +
-        'Sodium: ' + fmt(o.sodium_mg,0) + ' mg';
-      nutriEl.appendChild(block);
-
-      // Items table (if present)
-      if (items.length) {
-        document.getElementById('itemsWrap').style.display = '';
-        const tb = document.getElementById('itemsTbody');
-        tb.innerHTML = '';
-        items.forEach(it => {
-          const tr = document.createElement('tr');
-          const tdName = document.createElement('td'); tdName.textContent = it.name || '';
-          const tdCode = document.createElement('td'); tdCode.textContent = it.afcd_code || '';
-          const tdGr = document.createElement('td'); tdGr.style.textAlign='right'; tdGr.textContent = fmt(it.grams, 0);
-          const tdQty= document.createElement('td'); tdQty.style.textAlign='right'; tdQty.textContent = String(it.qty ?? 1);
-          tr.append(tdName, tdCode, tdGr, tdQty);
-          tb.appendChild(tr);
-        });
-      }
-
-    const payload = [
-  `NutriPOS #${o.id}`,
-  `Energy: ${o.energy_kj} kJ (${o.calories_kcal} kcal)`,
-  `Protein: ${o.protein_g} g`,
-  `Fat: ${o.fat_g} g`,
-  `Carb: ${o.carb_g} g`,
-  `Sugars: ${o.sugars_g} g`,
-  `Sodium: ${o.sodium_mg} mg`
-].join('\n');
-
-new QRCode(document.getElementById('qrcode'), {
-  text: payload,
-  width: 196,
-  height: 196
-});
-
+  async function load(){
+    const url = '../backend/orders_get.php?id=' + encodeURIComponent(id) + '&t=' + Date.now();
+    let res, data;
+    try {
+      res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error('HTTP ' + res.status);
+      data = await res.json();
+    } catch (e) {
+      document.body.innerHTML = '<div class="receipt"><p>Failed to load receipt.</p></div>';
+      return;
+    }
+    if (!data || data.error) {
+      document.body.innerHTML = '<div class="receipt"><p>'+(data?.error || 'Order not found')+'</p></div>';
+      return;
     }
 
-    load();
-  })();
-  </script>
+    const o = data.order || {};
+    const items = data.items || [];
+
+    setText('#orderNo', '#'+(o.id||''));
+    setText('#createdAt', o.created_at ? (o.created_at+' UTC') : '');
+
+    const nutriEl = document.getElementById('nutri');
+    nutriEl.innerHTML =
+      '<strong>Nutrition summary</strong><br/>' +
+      'Energy: ' + fmt(o.energy_kj,1) + ' kJ (' + fmt(o.calories_kcal,0) + ' kcal)<br/>' +
+      'Protein: ' + fmt(o.protein_g) + ' g, Fat: ' + fmt(o.fat_g) + ' g<br/>' +
+      'Carbs: ' + fmt(o.carb_g) + ' g, Sugars: ' + fmt(o.sugars_g) + ' g<br/>' +
+      'Sodium: ' + fmt(o.sodium_mg,0) + ' mg';
+
+    if (items.length) {
+      document.getElementById('itemsWrap').style.display = '';
+      const tb = document.getElementById('itemsTbody');
+      tb.innerHTML = '';
+      items.forEach(it => {
+        const tr = document.createElement('tr');
+        tr.innerHTML =
+          `<td>${it.name||''}</td>`+
+          `<td>${it.afcd_code||''}</td>`+
+          `<td style="text-align:right;">${fmt(it.grams,0)}</td>`+
+          `<td style="text-align:right;">${String(it.qty ?? 1)}</td>`;
+        tb.appendChild(tr);
+
+        // ingredients (if backend sends them)
+        if (Array.isArray(it.ingredients) && it.ingredients.length) {
+          const trIng = document.createElement('tr');
+          const td = document.createElement('td');
+          td.colSpan = 4; td.style.padding='6px 8px'; td.style.color='#555'; td.style.fontSize='0.92em';
+          const ul = document.createElement('ul'); ul.style.margin='4px 0 0'; ul.style.paddingLeft='18px';
+          it.ingredients.forEach(ing => {
+            const li = document.createElement('li');
+            const code = ing.afcd_code ? ` [${ing.afcd_code}]` : '';
+            li.textContent = `${fmt(ing.grams,0)} g – ${(ing.name||'Ingredient')}${code}`;
+            ul.appendChild(li);
+          });
+          td.appendChild(ul); trIng.appendChild(td); tb.appendChild(trIng);
+        }
+      });
+    }
+
+    new QRCode(document.getElementById('qrcode'), {
+      text: [
+        `NutriPOS #${o.id}`,
+        `Energy: ${o.energy_kj} kJ (${o.calories_kcal} kcal)`,
+        `Protein: ${o.protein_g} g`,
+        `Fat: ${o.fat_g} g`,
+        `Carb: ${o.carb_g} g`,
+        `Sugars: ${o.sugars_g} g`,
+        `Sodium: ${o.sodium_mg} mg`
+      ].join('\n'),
+      width: 196, height: 196
+    });
+  }
+
+  load();
+})();
+</script>
+
 </body>
 </html>

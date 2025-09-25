@@ -18,7 +18,7 @@ auth_require_admin();
         <ul class="navbar-links">
           <li><a href="../public/custom_pos_builder.html" class="nav-button">Menu Builder</a></li>
           <li><a href="../public/products.html" class="nav-button">Menu Management</a></li>
-          <li><a href="orders.php" class="nav-button">Order History</a></li>
+          <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
         </ul>
         <div class="user-section">
           <span class="admin"><?php echo htmlspecialchars($_SESSION['email']); ?></span>
