@@ -71,8 +71,8 @@ if (isset($_GET['order'])) {
                 $line_item_text .= ' (' . $row['variation_name'] . ')';
             }
             if (!empty($row['sku'])) {
-                        $line .= ' [SKU: ' . htmlspecialchars($row['sku']) . ']';
-            }
+                $line_item_text .= ' [SKU: ' . htmlspecialchars($row['sku']) . ']';
+}
             echo $line_item_text . "<br>";
         }
         

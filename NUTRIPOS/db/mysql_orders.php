@@ -69,7 +69,7 @@ HTML;
 
 $result = $conn->query("SELECT * FROM orders ORDER BY closed_at DESC");
 while($row = $result->fetch_assoc()) {
-    echo "<tr><td><a href='../order.php?order=" . $row['id'] . "'>" . $row['closed_at'] . "</a></td><td>" . $row['total'] . "</td></tr>";
+    echo "<tr><td><a href='../public/receipt.html?order=" . $row['id'] . "'>" . $row['closed_at'] . "</a></td><td>" . $row['total'] . "</td></tr>";
 }
 
 
