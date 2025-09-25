@@ -47,10 +47,11 @@ if (isset($_GET['order'])) {
     JOIN line_items li ON oli.line_item_catalog_object_id = li.line_item_catalog_object_id 
     LEFT JOIN order_line_item_modifiers olim ON oli.id = olim.order_line_item_id 
     LEFT JOIN modifiers m ON olim.modifier_id = m.id
-    LEFT JOIN catalog_map cm ON cm.catalog_object_id = li.line_item_catalog_object_id    
+    LEFT JOIN catalog_map cm ON cm.catalog_object_id = li.line_item_catalog_object_id
     WHERE o.id ='" . $order . "'
     ORDER BY oli.id, m.name"
     );
+
     
     $current_line_item = null;
     $line_item_index = -1;
