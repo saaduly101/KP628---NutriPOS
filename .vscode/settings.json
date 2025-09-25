@@ -1,0 +1,19 @@
+{
+    "sqltools.connections": [
+        {
+            "mysqlOptions": {
+                "authProtocol": "default",
+                "enableSsl": "Disabled"
+            },
+            "ssh": "Disabled",
+            "previewLimit": 50,
+            "server": "tommy.heliohost.org",
+            "port": 3306,
+            "driver": "MySQL",
+            "name": "s3933172_nutripos",
+            "database": "s3933172_nutripos",
+            "username": "s3933172_KP628",
+            "password": "hawks1JOG-spirited-stoked7kiddo"
+        }
+    ]
+}
