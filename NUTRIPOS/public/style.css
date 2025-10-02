@@ -1533,3 +1533,108 @@ mark {
 .receipt-btn.secondary:hover {
     background-color: #4b5563;
 }
+
+/* ---------------- Responsive Layout Fixes (iPad & Small Laptops) ---------------- */
+
+/* 1) Fixed navbar spacer: ensure content is not hidden under fixed navbar */
+:root { --navbar-h: 64px; }
+body { padding-top: var(--navbar-h); }
+
+/* Normalize top spacing for containers */
+.main-container,
+.container {
+  margin-top: 24px;
+}
+
+/* 2) Default builder layout: grid with gap */
+.builder-section{
+  display: grid;
+  gap: 24px;
+}
+
+/* Single-column default for tablets and small laptops */
+@media (max-width: 1024px){
+  .builder-section{
+    display: flex !important;
+    flex-direction: column !important;   /* stack vertically */
+    align-items: stretch !important;
+    gap: 20px !important;
+  }
+
+  .builder-left,
+  .builder-right{
+    flex: 0 1 auto !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Sidebar should not reserve extra width */
+  .nutripos-builder-container.sidebar{
+    min-width: 0 !important;
+    width: 100% !important;
+  }
+
+  /* Input row should wrap fully on narrow screens */
+  .button-container{
+    flex-wrap: wrap !important;
+    gap: 10px !important;
+  }
+  #productName, #addRow{
+    flex: 1 1 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* Table scroll behavior on smaller screens */
+  .nutripos-ingredients-table{
+    display: block !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+  .nutripos-ingredients-table table{
+    min-width: 640px !important; /* slightly narrower for tablets */
+  }
+
+  /* Reduce padding/margins for containers on smaller screens */
+  .container, .main-container{
+    padding: 0 12px !important;
+    margin-top: 16px !important;
+  }
+
+  /* Slightly smaller navbar height for narrow screens */
+  :root { --navbar-h: 56px; }
+}
+
+/* 3) Two-column layout for larger laptops (>=1200px) */
+@media (min-width: 1200px){
+  .builder-section{
+    grid-template-columns: 2fr 1fr !important;
+    grid-template-areas: "left right" !important;
+    column-gap: 28px;
+  }
+}
+
+/* 4) General responsive adjustments */
+.nutripos-builder-container.sidebar{
+  min-width: 0;
+}
+
+.button-container{
+  flex-wrap: wrap;
+}
+@media (min-width: 1024px){
+  .button-container{ flex-wrap: nowrap; }
+}
+
+#productName{ min-width: 0; }
+#custEmail{ min-width: 0; }
+
+.stats{ flex-wrap: wrap; }
+.stat-box{ flex: 1 1 220px; }
+
+@media (max-width: 767.98px){
+  .navbar-container{ padding: 0 12px; }
+  .container, .main-container{ padding: 0 12px; }
+  .nutripos-builder-container{ padding: 16px; }
+  .button-container{ gap: 10px; }
+  .btn, input, select{ font-size: 14px; }
+}
