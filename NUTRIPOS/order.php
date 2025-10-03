@@ -6,6 +6,8 @@ require_once __DIR__.'../backend/auth.php';
 auth_require_admin();
 
 use Dotenv\Dotenv;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 // Load the .env file
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
@@ -109,6 +111,37 @@ if (isset($_GET['order'])) {
 }
 
 mysqli_close($conn);
+
+// Only send email when the Email Receipt button is clicked
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
+    $mail = new PHPMailer(true); // Enable exceptions
+
+    // SMTP Configuration
+    $mail->isSMTP();
+    $mail->Host = $_ENV['EMAIL_HOST'];
+    $mail->SMTPAuth = true;
+    $mail->Username = $_ENV['EMAIL_USERNAME'];
+    $mail->Password = $_ENV['EMAIL_PASSWORD'];
+    $mail->SMTPSecure = 'tls';
+    $mail->Port = $_ENV['EMAIL_PORT'];
+
+    // Sender and recipient settings
+    $mail->setFrom($_ENV['EMAIL_USERNAME'], 'From Name');
+    $mail->addAddress($_ENV['EMAIL_USERNAME'], 'Recipient Name');
+
+    // Sending plain text email
+    $mail->isHTML(false); // Set email format to plain text
+    $mail->Subject = 'Your Receipt - NutriPOS';
+    $mail->Body    = 'This is just an example email!';
+
+    if(!$mail->send()){
+        echo 'Message could not be sent. Mailer Error: ' . $mail->ErrorInfo;
+    } else {
+        echo 'Message has been sent';
+    }
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -258,6 +291,9 @@ mysqli_close($conn);
 
             <!-- print and return button -->
             <div class="receipt-actions">
+                <form method="post" action="?order=<?php echo htmlspecialchars($order_data['id']); ?>" style="display:inline;">
+                    <button type="submit" name="send_email" class="receipt-btn primary">📧 Email Receipt</button>
+                </form>
                 <button onclick="window.print()" class="receipt-btn primary">🖨️ Print Receipt</button>
                 <a href="./db/mysql_orders.php" class="receipt-btn secondary">← Back to Order History</a>
             </div>
