@@ -1534,107 +1534,274 @@ mark {
     background-color: #4b5563;
 }
 
-/* ---------------- Responsive Layout Fixes (iPad & Small Laptops) ---------------- */
-
-/* 1) Fixed navbar spacer: ensure content is not hidden under fixed navbar */
-:root { --navbar-h: 64px; }
-body { padding-top: var(--navbar-h); }
-
-/* Normalize top spacing for containers */
-.main-container,
-.container {
-  margin-top: 24px;
-}
-
-/* 2) Default builder layout: grid with gap */
-.builder-section{
-  display: grid;
-  gap: 24px;
-}
-
-/* Single-column default for tablets and small laptops */
-@media (max-width: 1024px){
-  .builder-section{
+/* ------------ Single column: stack when <1024px ------------ */
+@media (max-width: 1023.98px){
+  body .builder-section {
     display: flex !important;
-    flex-direction: column !important;   /* stack vertically */
+    flex-direction: column !important;
     align-items: stretch !important;
     gap: 20px !important;
   }
 
-  .builder-left,
-  .builder-right{
+  body .builder-section .builder-left,
+  body .builder-section .builder-right {
     flex: 0 1 auto !important;
     width: 100% !important;
     max-width: 100% !important;
   }
 
-  /* Sidebar should not reserve extra width */
-  .nutripos-builder-container.sidebar{
+  body .builder-section .nutripos-builder-container.sidebar {
     min-width: 0 !important;
     width: 100% !important;
   }
 
-  /* Input row should wrap fully on narrow screens */
-  .button-container{
+  body .builder-section .button-container {
+    display: flex;
     flex-wrap: wrap !important;
     gap: 10px !important;
   }
-  #productName, #addRow{
+
+  body .builder-section #productName,
+  body .builder-section #addRow {
     flex: 1 1 100% !important;
     min-width: 0 !important;
   }
 
-  /* Table scroll behavior on smaller screens */
-  .nutripos-ingredients-table{
+  body .builder-section .nutripos-ingredients-table {
     display: block !important;
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch;
   }
-  .nutripos-ingredients-table table{
-    min-width: 640px !important; /* slightly narrower for tablets */
+
+  body .builder-section .nutripos-ingredients-table table {
+    min-width: 640px !important;
   }
 
-  /* Reduce padding/margins for containers on smaller screens */
-  .container, .main-container{
+  body .builder-section .container,
+  body .builder-section .main-container {
     padding: 0 12px !important;
     margin-top: 16px !important;
   }
-
-  /* Slightly smaller navbar height for narrow screens */
-  :root { --navbar-h: 56px; }
 }
 
-/* 3) Two-column layout for larger laptops (>=1200px) */
-@media (min-width: 1200px){
-  .builder-section{
-    grid-template-columns: 2fr 1fr !important;
-    grid-template-areas: "left right" !important;
+/* ------------ Two columns: ≥1024px keep right panel on the right ------------ */
+@media (min-width: 1024px){
+  body .builder-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-areas: "left right";
     column-gap: 28px;
+  }
+  body .builder-section .builder-left  { grid-area: left; }
+  body .builder-section .builder-right { grid-area: right; }
+}
+
+/* --------- Fix navbar overlap on smaller screens --------- */
+@media (max-width: 1024px){
+  .navbar .navbar-links a {
+    font-size: 14px !important;
+    padding: 6px 8px !important;
+  }
+
+  .user-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px !important;
+  }
+
+  .user-section .admin {
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .user-section .logout-btn,
+  .user-section .btn-logout,
+  .user-section #logout, 
+  .user-section button.logout {
+    font-size: 12px !important;
+    padding: 4px 8px !important;
   }
 }
 
-/* 4) General responsive adjustments */
-.nutripos-builder-container.sidebar{
-  min-width: 0;
-}
-
-.button-container{
-  flex-wrap: wrap;
-}
-@media (min-width: 1024px){
-  .button-container{ flex-wrap: nowrap; }
-}
-
-#productName{ min-width: 0; }
-#custEmail{ min-width: 0; }
-
-.stats{ flex-wrap: wrap; }
-.stat-box{ flex: 1 1 220px; }
-
+/* --------- Extra small screens (<768px): allow wrapping --------- */
 @media (max-width: 767.98px){
-  .navbar-container{ padding: 0 12px; }
-  .container, .main-container{ padding: 0 12px; }
-  .nutripos-builder-container{ padding: 16px; }
-  .button-container{ gap: 10px; }
-  .btn, input, select{ font-size: 14px; }
+  .navbar-container {
+    flex-wrap: wrap;
+  }
+
+  .user-section {
+    flex: 1 1 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* --------- Make top and bottom cards equal width & centered --------- */
+@media (max-width: 1023.98px){
+  .builder-section .nutripos-builder-container,
+  .builder-section .nutrition-totals {
+    width: 90%;
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+    box-sizing: border-box;
+  }
+
+  .builder-section .nutrition-totals {
+    border-radius: 24px;
+    padding: 20px;
+    background: #fff;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+  }
+}
+
+/* --------- Keep navbar in one line for tablets (iPad portrait) --------- */
+@media (min-width: 768px) and (max-width: 1024px){
+  .navbar-container{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    flex-wrap: nowrap !important;
+    gap: 8px !important;
+    padding-left: 12px !important;
+    padding-right: 12px !important;
+  }
+
+  .logo-dashboard,
+  .user-section{
+    flex: 0 0 auto !important;
+    min-width: 0 !important;
+  }
+
+  .navbar .navbar-links{
+    display: flex !important;
+    flex: 1 1 0 !important;
+    min-width: 0 !important;
+    justify-content: center !important;
+    gap: 10px !important;
+  }
+  .navbar-links li{ margin-left: 0 !important; }
+
+  .navbar .logo{ font-size: 22px !important; }
+  .admin-dashboard{ font-size: 13px !important; }
+  .navbar-links li a,
+  .navbar-links .nav-button{
+    font-size: 13.5px !important;
+    padding: 4px 8px !important;
+    line-height: 1 !important;
+  }
+  .navbar-links .nav-button.active{ transform: none !important; }
+
+  .user-section .admin{
+    max-width: 160px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 12px !important;
+  }
+  .logout-btn{
+    font-size: 12px !important;
+    padding: 4px 8px !important;
+  }
+}
+
+/* --------- Keep navbar menu in single line --------- */
+.navbar .navbar-links{
+  display: flex !important;
+  flex: 0 1 auto !important;
+  flex-wrap: nowrap !important;
+  justify-content: center !important;
+  gap: 12px !important;
+  min-width: 0 !important;
+}
+.navbar .navbar-links li{
+  margin: 0 !important;
+  flex: 0 0 auto !important;
+}
+.navbar .navbar-links a,
+.navbar .navbar-links .nav-button{
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 10px;
+  font-size: 14px;
+  line-height: 1;
+}
+.navbar .navbar-links .nav-button.active{
+  transform: none !important;
+}
+
+/* --------- iPad mini/Air 768–1024 tighter spacing --------- */
+@media (min-width:768px) and (max-width:1024px){
+  .navbar .navbar-links{ gap: 10px !important; }
+  .navbar .navbar-links a,
+  .navbar .navbar-links .nav-button{ padding: 4px 8px; font-size: 13.5px; }
+  .user-section .admin{ max-width: 160px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+}
+
+/* --------- General: avoid setting global font-size/padding outside breakpoints --------- */
+.navbar .navbar-links a,
+.navbar .navbar-links .nav-button{
+  display: inline-flex;
+  align-items: center;
+  line-height: 1;
+}
+
+/* --------- Tablet 768–1024: compact layout --------- */
+@media (min-width:768px) and (max-width:1024px){
+  .navbar-container{
+    display:flex !important;
+    align-items:center !important;
+    justify-content:space-between !important;
+    flex-wrap:nowrap !important;
+    gap:12px !important;
+    padding-left:12px !important;
+    padding-right:12px !important;
+  }
+
+  .navbar .logo{ font-size:22px !important; }
+  .admin-dashboard{ font-size:13px !important; }
+
+  .navbar .navbar-links{
+    display:flex !important;
+    flex:1 1 0 !important;
+    min-width:0 !important;
+    justify-content:center !important;
+    gap:12px !important;
+  }
+  .navbar .navbar-links li{ margin-left:0 !important; }
+
+  .navbar .navbar-links a,
+  .navbar .navbar-links .nav-button{
+    font-size:13px !important;
+    padding:4px 8px !important;
+    line-height:1 !important;
+  }
+  .navbar .navbar-links .nav-button.active{ transform:none !important; }
+
+  .user-section .admin{
+    max-width:160px !important;
+    white-space:nowrap !important;
+    overflow:hidden !important;
+    text-overflow:ellipsis !important;
+    font-size:12px !important;
+  }
+
+  .logout-btn{ padding:4px 8px !important; font-size:12px !important; }
+}
+
+/* --------- Small screen <768 --------- */
+@media (max-width:767.98px){
+  .navbar .navbar-links{ gap:12px !important; }
+  .navbar .navbar-links a,
+  .navbar .navbar-links .nav-button{ font-size:14px !important; padding:6px 8px !important; }
+}
+
+/* --------- Large screen >1024 --------- */
+@media (min-width:1024.02px){
+  .navbar .navbar-links{ gap:20px; }
+  .navbar .navbar-links a,
+  .navbar .navbar-links .nav-button{ font-size:16px; padding:8px 12px; }
 }
