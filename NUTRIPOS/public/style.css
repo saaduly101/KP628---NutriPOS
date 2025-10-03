@@ -1805,3 +1805,97 @@ mark {
   .navbar .navbar-links a,
   .navbar .navbar-links .nav-button{ font-size:16px; padding:8px 12px; }
 }
+
+/* ===== Navbar: three-column grid ===== */
+.navbar .navbar-container{
+  display:grid !important;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  align-items:center !important;
+  gap:12px !important;
+  padding:0 12px !important;
+}
+/* Middle menu should shrink if needed, do not crop */
+.logo-dashboard,
+.navbar .navbar-links,
+.user-section{ min-width:0 !important; }
+
+.navbar .navbar-links{
+  display:flex !important;
+  justify-content:center !important;   /* Center when it fits */
+  gap:12px !important;
+  flex-wrap:nowrap !important;
+  overflow-x:auto;                     /* If it doesn’t fit → allow slight horizontal scroll */
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.navbar .navbar-links::-webkit-scrollbar{ display:none; }
+
+.navbar .navbar-links li{ margin:0 !important; flex:0 0 auto; }
+.navbar .navbar-links a,
+.navbar .navbar-links .nav-button{
+  display:inline-flex; align-items:center; white-space:nowrap;
+  line-height:1; padding:6px 10px; font-size:14px;
+}
+
+/* Right section: email with ellipsis */
+.user-section{ display:flex; align-items:center; gap:8px; }
+.user-section .admin{
+  max-width:18ch; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.user-section .logout-btn,
+.user-section .btn-logout,
+.user-section #logout,
+.user-section button.logout{ padding:4px 8px; font-size:12px; }
+
+/* ===== iPad range: gradually tighten so it stays centered ===== */
+@media (min-width:900px) and (max-width:1024px){
+  .navbar .navbar-links{ gap:10px !important; }
+  .navbar .navbar-links a,.navbar .navbar-links .nav-button{ padding:4px 8px !important; font-size:13.5px !important; }
+  .user-section .admin{ max-width:16ch !important; font-size:12px !important; }
+}
+@media (min-width:768px) and (max-width:899.98px){
+  .navbar .navbar-links{ gap:8px !important; }
+  .navbar .navbar-links a,.navbar .navbar-links .nav-button{ padding:3px 6px !important; font-size:13px !important; }
+  .user-section .admin{ max-width:14ch !important; }
+}
+
+/* <768: allow wrapping, move user-section to a new row */
+@media (max-width:767.98px){
+  .navbar .navbar-container{ grid-template-columns:1fr auto; row-gap:8px; }
+  .user-section{ grid-column:1 / -1; justify-self:end; }
+}
+
+/* ===== iPad Mini optimization: 768–900px tighter layout ===== */
+@media (min-width:768px) and (max-width:900px){
+
+  /* Left side: smaller logo and breadcrumb */
+  .navbar .logo{ font-size:20px !important; line-height:1 !important; }
+  .admin-dashboard{ font-size:12px !important; }
+
+  /* Middle menu: smaller font, padding and spacing */
+  .navbar .navbar-links{ gap:8px !important; }
+  .navbar .navbar-links a,
+  .navbar .navbar-links .nav-button{
+    /* Auto adjust between 12–13px on mini screens */
+    font-size: clamp(12px, 1.6vw, 13px) !important;
+    padding: 3px 6px !important;
+    letter-spacing: -.1px;  /* Slightly reduce width */
+  }
+
+  /* Right side: narrower email and smaller logout button */
+  .user-section .admin{
+    max-width: 13ch !important;    /* Shorter than Air */
+    font-size: 12px !important;
+  }
+  .user-section .logout-btn,
+  .user-section .btn-logout,
+  .user-section #logout,
+  .user-section button.logout{
+    padding: 3px 6px !important;
+    font-size: 11px !important;
+    line-height: 1 !important;
+  }
+
+  /* Container: reduce gap and padding to avoid overflow */
+  .navbar .navbar-container{ gap:8px !important; padding-left:10px !important; padding-right:10px !important; }
+}
