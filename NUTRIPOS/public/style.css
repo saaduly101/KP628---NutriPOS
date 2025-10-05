@@ -1214,9 +1214,22 @@ mark {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin-bottom: 30px;
-    margin-top: 80px;
     max-width: 960px;
 }
+
+.email-status-card {
+    background: white;
+    border-radius: 24px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-bottom: 30px;
+    max-width: 960px;
+}
+
+.main-container > div:first-of-type {
+    margin-top: 80px;
+}
+
 
 .order-header {
     padding: 30px;
@@ -1464,6 +1477,10 @@ mark {
         margin: 0;
     }
 
+    .email-status-card {
+        display: none;
+    }
+
     .order-details-card {
         box-shadow: none;
         border-radius: 0;
@@ -1501,7 +1518,23 @@ mark {
         display: none !important;
     }
 }
-        
+
+.form-text-input {
+    padding: 12px 24px;
+    border: 1px solid #2563EB;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.3s ease;
+}
+
+.form-text-input:focus {
+    border-color: #1d4ed8;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
 .receipt-btn {
     padding: 12px 24px;
     border: none;
