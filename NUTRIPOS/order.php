@@ -117,61 +117,62 @@ $mailStatus = null;
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
     $mail = new PHPMailer(true); // Enable exceptions
 
-    // SMTP Configuration
-    $mail->isSMTP();
-    $mail->Host = $_ENV['EMAIL_HOST'];
-    $mail->SMTPAuth = true;
-    $mail->Username = $_ENV['EMAIL_USERNAME'];
-    $mail->Password = $_ENV['EMAIL_PASSWORD'];
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-    $mail->Port = $_ENV['EMAIL_PORT'];
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = $_ENV['EMAIL_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['EMAIL_USERNAME'];
+        $mail->Password = $_ENV['EMAIL_PASSWORD'];
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = $_ENV['EMAIL_PORT'];
 
-    // Sender and recipient settings
-    $mail->setFrom($_ENV['EMAIL_USERNAME'], 'NutriPOS');
-    $mail->addAddress($_POST['email']);
-    $mail->addBCC($_ENV['EMAIL_BCC'], 'NutriPOS');
+        // Sender and recipient settings
+        $mail->setFrom($_ENV['EMAIL_USERNAME'], 'NutriPOS');
+        $mail->addAddress($_POST['email']);
+        $mail->addBCC($_ENV['EMAIL_BCC'], 'NutriPOS');
 
-    // Sending HTML email
-    $mail->isHTML(true);
-    $mail->Subject = 'NutriPOS Order: ' . $order_data['id'];
-    
-    $itemsHtml = '';
-    foreach ($line_items as $item) {
-        $name = htmlspecialchars($item['name'] ?? '');
-        $variation = !empty($item['variation_name']) ? ' (' . htmlspecialchars($item['variation_name']) . ')' : '';
-        $qty = htmlspecialchars((string)($item['quantity'] ?? 0));
 
-        $modifiersHtml = '';
-        if (!empty($item['modifiers'])) {
-            $modifiersHtml .= '<ul class="modifiers">';
-            foreach ($item['modifiers'] as $modifier) {
-                $modName = htmlspecialchars($modifier['name'] ?? '');
-                $modQty = (int)($modifier['quantity'] ?? 1);
-                $qtySuffix = $modQty > 1 ? ' <span class="modifier-quantity">' . $modQty . 'x</span>' : '';
-                $modifiersHtml .= '<li>' . $modName . $qtySuffix . '</li>';
+        // Sending HTML email
+        $mail->isHTML(true);
+        $mail->Subject = 'NutriPOS Order: ' . $order_data['id'];
+        
+        $itemsHtml = '';
+        foreach ($line_items as $item) {
+            $name = htmlspecialchars($item['name'] ?? '');
+            $variation = !empty($item['variation_name']) ? ' (' . htmlspecialchars($item['variation_name']) . ')' : '';
+            $qty = htmlspecialchars((string)($item['quantity'] ?? 0));
+
+            $modifiersHtml = '';
+            if (!empty($item['modifiers'])) {
+                $modifiersHtml .= '<ul class="modifiers">';
+                foreach ($item['modifiers'] as $modifier) {
+                    $modName = htmlspecialchars($modifier['name'] ?? '');
+                    $modQty = (int)($modifier['quantity'] ?? 1);
+                    $qtySuffix = $modQty > 1 ? ' <span class="modifier-quantity">' . $modQty . 'x</span>' : '';
+                    $modifiersHtml .= '<li>' . $modName . $qtySuffix . '</li>';
+                }
+                $modifiersHtml .= '</ul>';
             }
-            $modifiersHtml .= '</ul>';
+
+            $itemsHtml .= '<li>' . $name . $variation . ' <span class="item-quantity">x' . $qty . '</span>' . $modifiersHtml . '</li>';
         }
 
-        $itemsHtml .= '<li>' . $name . $variation . ' <span class="item-quantity">x' . $qty . '</span>' . $modifiersHtml . '</li>';
-    }
+        $mail->Body = <<<HTML
+                    <h3>Your Receipt from NutriPOS!</h3>
+                    <p>{$order_data['order_date']} at {$order_data['order_time']}</p>
+                    <p>Total: {$order_data['total']}</p>
+                    <h4>Items:</h4>
+                    <ul>
+                    {$itemsHtml}
+                    </ul>
+                    HTML;
 
-    $mail->Body = <<<HTML
-                <h3>Order ID: {$order_data['id']}</h3>
-                <p>Order Date: {$order_data['order_date']}</p>
-                <p>Order Time: {$order_data['order_time']}</p>
-                <p>Order Total: {$order_data['total']}</p>
-                <h4>Order Items:</h4>
-                <ul>
-                {$itemsHtml}
-                </ul>
-                HTML;
-
-    try {
+    
         $mail->send();
-        $mailStatus = '✅ Message has been sent';
+        $mailStatus = '✅ Receipt has been sent to the provided email address!';
     } catch (Exception $e) {
-        $mailStatus = '❌ Message could not be sent.<br>' . htmlspecialchars($mail->ErrorInfo);
+        $mailStatus = '❌ Email could not be sent.<br>' . htmlspecialchars($e->getMessage());
     }
 }
 
