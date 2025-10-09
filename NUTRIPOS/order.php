@@ -241,6 +241,12 @@ mysqli_close($conn);
                                 ?>
                             </span>
                         </div>
+
+                        <div class="order-nutrition-card" id="orderNutrition">
+                            <h3 class="section-title">Nutrition Summary</h3>
+                            <div id="nutriContent" class="nutri-content"></div>
+                        </div>
+
                         <div class="summary-row">
                             <span class="summary-label">Payment Method</span>
                             <span class="summary-value">Card Payment</span>
@@ -258,11 +264,57 @@ mysqli_close($conn);
 
             <!-- print and return button -->
             <div class="receipt-actions">
-                <button onclick="window.print()" class="receipt-btn primary">🖨️ Print Receipt</button>
-                <a href="./db/mysql_orders.php" class="receipt-btn secondary">← Back to Order History</a>
+                <button onclick="window.print()" class="receipt-btn primary">Print Receipt</button>
+                <button onclick="window.print()" class="receipt-btn primary">Email Receipt</button>
+                <button class="receipt-btn primary">Create a QR Code</button>
+                <button class="receipt-btn primary" style="background-color: grey;"><a href="./db/mysql_orders.php" style="color: inherit; text-decoration: none;">← Back to Order History</a></button>
             </div>
         <?php endif; ?>
     </div>
+
+<script>
+(function () {
+  // Get order id from the PHP-rendered span
+  var idEl = document.querySelector('.order-id-value');
+  if (!idEl) return;
+  var id = (idEl.textContent || '').trim();
+  if (!id) return;
+
+  // format helpers
+  function fmt(n, d) { n = Number(n); return isFinite(n) ? n.toFixed(d ?? 2) : '0'; }
+  function show(html) {
+    var card = document.getElementById('orderNutrition');
+    var content = document.getElementById('nutriContent');
+    if (card && content) {
+      content.innerHTML = html;
+      card.style.display = '';
+    }
+  }
+
+  fetch('./backend/orders_get.php?id=' + encodeURIComponent(id) + '&t=' + Date.now(), { cache: 'no-store' })
+    .then(function (res) { if (!res.ok) throw new Error('HTTP ' + res.status); return res.json(); })
+    .then(function (data) {
+      if (!data || data.error) throw new Error(data && data.error || 'No data');
+      var o = data.order || {};
+      
+      var html = ''
+        + '<div><strong>Energy:</strong> ' + fmt(o.energy_kj, 1) + ' kJ (' + fmt(o.calories_kcal, 0) + ' kcal)</div>'
+        + '<div><strong>Protein:</strong> ' + fmt(o.protein_g) + ' g</div>'
+        + '<div><strong>Fat:</strong> ' + fmt(o.fat_g) + ' g</div>'
+        + '<div><strong>Carbs:</strong> ' + fmt(o.carb_g) + ' g</div>'
+        + '<div><strong>Sugars:</strong> ' + fmt(o.sugars_g) + ' g</div>'
+        + '<div><strong>Sodium:</strong> ' + fmt(o.sodium_mg, 0) + ' mg</div>';
+
+      show(html);
+    })
+    .catch(function () {
+      show('<div class="muted">Nutrition data not available.</div>');
+    });
+})();
+</script>
+
 </body>
 </html>
 <?php endif; ?>
+
+
