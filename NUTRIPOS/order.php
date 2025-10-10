@@ -110,8 +110,95 @@ if (isset($_GET['order'])) {
     $error_message = "No order ID provided.";
 }
 
-mysqli_close($conn);
+
 $mailStatus = null;
+// Calculate nutrition data using mysqli (same as main connection)
+$nutritionData = null;
+if ($order_data !== null && !empty($line_items)) {
+    $orderTotals = [
+        'Energy (kJ)' => 0, 'Calories (kcal)' => 0, 'Protein (g)' => 0,
+        'Fat (g)' => 0, 'Carbohydrate (g)' => 0, 'Sugars (g)' => 0, 'Sodium (mg)' => 0
+    ];
+
+    foreach ($line_items as $item) {
+        $catalogId = mysqli_real_escape_string($conn, $item['catalog_id']);
+
+        // Get product mapping using mysqli
+        $sql = "SELECT product_id, serve_multiplier FROM square_catalog_map WHERE catalog_object_id = '$catalogId'";
+        $result = mysqli_query($conn, $sql);
+
+        if ($result && ($mapping = mysqli_fetch_assoc($result))) {
+            $productId = (int)$mapping['product_id'];
+            $multiplier = (float)($mapping['serve_multiplier'] ?? 1.0);
+            $quantity = (float)$item['quantity'];
+
+            // Try to get cached nutrition totals first
+            $sql = "SELECT energy_kj, calories_kcal, protein_g, fat_g, carb_g, sugars_g, sodium_mg FROM product_nutrition_totals WHERE product_id = $productId";
+            $result = mysqli_query($conn, $sql);
+
+            if ($result && ($cachedTotals = mysqli_fetch_assoc($result))) {
+                // Use cached values
+                foreach ($orderTotals as $key => $value) {
+                    $fieldMap = [
+                        'Energy (kJ)' => 'energy_kj',
+                        'Calories (kcal)' => 'calories_kcal',
+                        'Protein (g)' => 'protein_g',
+                        'Fat (g)' => 'fat_g',
+                        'Carbohydrate (g)' => 'carb_g',
+                        'Sugars (g)' => 'sugars_g',
+                        'Sodium (mg)' => 'sodium_mg'
+                    ];
+
+                    if (isset($cachedTotals[$fieldMap[$key]])) {
+                        $orderTotals[$key] += (float)$cachedTotals[$fieldMap[$key]] * $quantity * $multiplier;
+                    }
+                }
+                mysqli_free_result($result);
+            } else {
+                // Calculate from ingredients if no cached totals
+                mysqli_free_result($result); // Free the cached totals result first
+                $sql = "SELECT afcd_code, grams_per_unit FROM product_ingredients WHERE product_id = $productId";
+                $result = mysqli_query($conn, $sql);
+                $ingredients = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+                if (!empty($ingredients)) {
+                    require_once __DIR__ . '/backend/nutrition_lib.php';
+                    if (function_exists('afcd_calc_totals')) {
+                        $afcdItems = [];
+                        foreach ($ingredients as $ing) {
+                            $code = trim((string)($ing['afcd_code'] ?? ''));
+                            $grams = (float)($ing['grams_per_unit'] ?? 0) * $multiplier * $quantity;
+                            if ($code !== '' && $grams > 0) {
+                                $afcdItems[] = ['afcd_code' => $code, 'grams' => $grams];
+                            }
+                        }
+
+                        $calc = afcd_calc_totals($afcdItems);
+                        $totals = $calc['totals'] ?? [];
+
+                        foreach ($orderTotals as $key => $value) {
+                            $orderTotals[$key] += (float)($totals[$key] ?? 0);
+                        }
+                    }
+                }
+                mysqli_free_result($result);
+            }
+        }
+    }
+    mysqli_close($conn);
+
+    $nutritionData = [
+        'id' => $order_data['id'],
+        'created_at' => null,
+        'energy_kj' => round($orderTotals['Energy (kJ)'], 1),
+        'calories_kcal' => round($orderTotals['Calories (kcal)']),
+        'protein_g' => round($orderTotals['Protein (g)'], 2),
+        'fat_g' => round($orderTotals['Fat (g)'], 2),
+        'carb_g' => round($orderTotals['Carbohydrate (g)'], 2),
+        'sugars_g' => round($orderTotals['Sugars (g)'], 2),
+        'sodium_mg' => round($orderTotals['Sodium (mg)']),
+    ];
+}
 
 // Only send email when the Email Receipt button is clicked
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
@@ -158,6 +245,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
             $itemsHtml .= '<li>' . $name . $variation . ' <span class="item-quantity">x' . $qty . '</span>' . $modifiersHtml . '</li>';
         }
 
+        $nutritionHtml = '';
+        if ($nutritionData) {
+            $nutritionHtml = <<<HTML
+                    <h4>Nutrition Summary:</h4>
+                    <ul>
+                        <li><strong>Energy:</strong> {$nutritionData['energy_kj']} kJ ({$nutritionData['calories_kcal']} kcal)</li>
+                        <li><strong>Protein:</strong> {$nutritionData['protein_g']} g</li>
+                        <li><strong>Fat:</strong> {$nutritionData['fat_g']} g</li>
+                        <li><strong>Carbs:</strong> {$nutritionData['carb_g']} g</li>
+                        <li><strong>Sugars:</strong> {$nutritionData['sugars_g']} g</li>
+                        <li><strong>Sodium:</strong> {$nutritionData['sodium_mg']} mg</li>
+                    </ul>
+                    HTML;
+        }
+
         $mail->Body = <<<HTML
                     <h3>Your Receipt from NutriPOS!</h3>
                     <p>{$order_data['order_date']} at {$order_data['order_time']}</p>
@@ -166,6 +268,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
                     <ul>
                     {$itemsHtml}
                     </ul>
+                    {$nutritionHtml}
                     HTML;
 
     
