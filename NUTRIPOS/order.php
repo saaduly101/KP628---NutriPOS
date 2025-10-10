@@ -6,6 +6,8 @@ require_once __DIR__.'../backend/auth.php';
 auth_require_admin();
 
 use Dotenv\Dotenv;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 // Load the .env file
 $dotenv = Dotenv::createImmutable(__DIR__ . '/../');
@@ -109,6 +111,71 @@ if (isset($_GET['order'])) {
 }
 
 mysqli_close($conn);
+$mailStatus = null;
+
+// Only send email when the Email Receipt button is clicked
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
+    $mail = new PHPMailer(true); // Enable exceptions
+
+    try {
+        // SMTP Configuration
+        $mail->isSMTP();
+        $mail->Host = $_ENV['EMAIL_HOST'];
+        $mail->SMTPAuth = true;
+        $mail->Username = $_ENV['EMAIL_USERNAME'];
+        $mail->Password = $_ENV['EMAIL_PASSWORD'];
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        $mail->Port = $_ENV['EMAIL_PORT'];
+
+        // Sender and recipient settings
+        $mail->setFrom($_ENV['EMAIL_USERNAME'], 'NutriPOS');
+        $mail->addAddress($_POST['email']);
+        $mail->addBCC($_ENV['EMAIL_BCC'], 'NutriPOS');
+
+
+        // Sending HTML email
+        $mail->isHTML(true);
+        $mail->Subject = 'NutriPOS Order: ' . $order_data['id'];
+        
+        $itemsHtml = '';
+        foreach ($line_items as $item) {
+            $name = htmlspecialchars($item['name'] ?? '');
+            $variation = !empty($item['variation_name']) ? ' (' . htmlspecialchars($item['variation_name']) . ')' : '';
+            $qty = htmlspecialchars((string)($item['quantity'] ?? 0));
+
+            $modifiersHtml = '';
+            if (!empty($item['modifiers'])) {
+                $modifiersHtml .= '<ul class="modifiers">';
+                foreach ($item['modifiers'] as $modifier) {
+                    $modName = htmlspecialchars($modifier['name'] ?? '');
+                    $modQty = (int)($modifier['quantity'] ?? 1);
+                    $qtySuffix = $modQty > 1 ? ' <span class="modifier-quantity">' . $modQty . 'x</span>' : '';
+                    $modifiersHtml .= '<li>' . $modName . $qtySuffix . '</li>';
+                }
+                $modifiersHtml .= '</ul>';
+            }
+
+            $itemsHtml .= '<li>' . $name . $variation . ' <span class="item-quantity">x' . $qty . '</span>' . $modifiersHtml . '</li>';
+        }
+
+        $mail->Body = <<<HTML
+                    <h3>Your Receipt from NutriPOS!</h3>
+                    <p>{$order_data['order_date']} at {$order_data['order_time']}</p>
+                    <p>Total: {$order_data['total']}</p>
+                    <h4>Items:</h4>
+                    <ul>
+                    {$itemsHtml}
+                    </ul>
+                    HTML;
+
+    
+        $mail->send();
+        $mailStatus = '✅ Receipt has been sent to the provided email address!';
+    } catch (Exception $e) {
+        $mailStatus = '❌ Email could not be sent.<br>' . htmlspecialchars($e->getMessage());
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -141,7 +208,14 @@ mysqli_close($conn);
         </div>
     </nav>
 
-    <div class="main-container" style="max-width: 960px"    >
+    <div class="main-container" style="max-width: 960px">
+        <?php if ($mailStatus !== null): ?>
+            <div class="email-status-card">
+                <p style="margin: 15px;">
+                    <?php echo $mailStatus ?>
+                </p>
+            </div>
+        <?php endif; ?>
         <?php if ($error_message): ?>
             <div class="order-error">
                 <h2>❌ <?php echo htmlspecialchars($error_message); ?></h2>
@@ -262,10 +336,13 @@ mysqli_close($conn);
             </div>
 
 
-            <!-- print and return button -->
+            <!-- email, print, and return buttons -->
             <div class="receipt-actions">
+                <form method="post" action="?order=<?php echo htmlspecialchars($order_data['id']); ?>" style="display:inline;">
+                    <input type="text" name="email" placeholder="Enter email address" class="form-text-input" required>
+                    <button type="submit" name="send_email" class="receipt-btn primary">Email Receipt</button>
+                </form>
                 <button onclick="window.print()" class="receipt-btn primary">Print Receipt</button>
-                <button onclick="window.print()" class="receipt-btn primary">Email Receipt</button>
                 <button class="receipt-btn primary">Create a QR Code</button>
                 <button class="receipt-btn primary" style="background-color: grey;"><a href="./db/mysql_orders.php" style="color: inherit; text-decoration: none;">← Back to Order History</a></button>
             </div>
