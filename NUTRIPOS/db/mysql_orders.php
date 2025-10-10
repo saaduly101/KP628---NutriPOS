@@ -45,7 +45,7 @@ while ($row = $result->fetch_assoc()) {
   }
   $orders[$date][] = $row;
   $total_orders++;
-  $total_revenue += (float)$row['total'];
+  $total_revenue += (float)ltrim($row['total'], '$');
 }
 
 //Date format helper
@@ -72,7 +72,7 @@ function getDailyStats($dayOrders) {
   
   foreach ($dayOrders as $order) {
       $itemsSold += $order['item_count'];
-      $dayTotal += (float)$order['total'];
+      $dayTotal += (float)ltrim($order['total'], '$');
   }
   
   return [
@@ -151,7 +151,7 @@ mysqli_close($conn);
                   </div>
                 </div>
                 <div class="day-total">
-                  $<?php echo number_format($stats['total'], 2); ?> 
+                  $<?php echo number_format(ltrim($stats['total'], '$'), 2); ?> 
                   <p class="day-meta">Daily Total</p>
                 </div>
               </div>
@@ -169,7 +169,7 @@ mysqli_close($conn);
                       </div>
                     </div>
                     <div class="order-right">
-                      <div class="order-total">$<?php echo number_format((float)$order['total'], 2); ?></div>
+                      <div class="order-total">$<?php echo number_format(ltrim($order['total'], '$'), 2); ?></div>
                       <div class="payment-method">Card</div>
                     </div>
                   </a>
