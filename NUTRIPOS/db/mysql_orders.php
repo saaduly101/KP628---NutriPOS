@@ -96,7 +96,7 @@ mysqli_close($conn);
   <nav class="navbar">
     <div class="navbar-container">
       <div class="logo-dashboard"> 
-        <a href="../admin/dashboard.php" class="logo">NutriPOS</a>
+        <a href="../db/mysql_orders.php" class="logo">NutriPOS</a>
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
@@ -188,5 +188,3 @@ mysqli_close($conn);
   </script>
 </body>
 </html>
-
-
