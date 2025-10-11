@@ -1517,6 +1517,10 @@ mark {
     .btn, .receipt-btn {
         display: none !important;
     }
+
+    .receipt-actions {
+        display: none !important;
+    }
 }
 
 .form-text-input {
