@@ -1,152 +1,49 @@
-# NutriPOS (KP628)
+NutriPOS (KP628)
+ Overview
 
-NutriPOS is a web-based nutrition and recipe management system designed for seamless integration with restaurant POS workflows. It allows users to view, add, edit, and manage custom food recipes while calculating nutritional information dynamically.
+NutriPOS is a lightweight web-based nutrition and recipe management system designed for integration with restaurant Point-of-Sale (POS) workflows.
+It enables users to view, create, edit, and delete recipes, as well as manage ingredient lists through an intuitive browser interface.
 
----
 
-## 📋 Prerequisites
+ Prerequisites
 
-- **XAMPP** (recommended) — includes Apache, PHP, and MySQL
-- Alternatively, any server stack that supports:
-  - PHP 8.0+
-  - MySQL 5.7+
-  - Apache or Nginx web server
+To run the project locally, ensure the following requirements are met:
 
----
+XAMPP (recommended) — includes Apache, PHP, and MySQL
+(Alternatively, any other Apache-based distribution will also work)
 
-## ⚙️ Installation
+A modern web browser (e.g., Chrome, Edge, or Firefox)
 
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/yourusername/NutriPOS.git
-   ```
+ Installation & Setup
+Step  — Clone the Repository
 
-2. **Move to your local server directory**
-   - Example for XAMPP:  
-     Place the entire `NUTRIPOS` folder under:
-     ```
-     C:\xampp\htdocs\
-     ```
+Download or clone the project using Git:
 
-3. **Set up the database**
-   - Open **phpMyAdmin**
-   - Create a new database (e.g., `nutripos_db`)
-   - Import the schema file located at:
-     ```
-     /NUTRIPOS/backend/db/schema.sql
-     ```
+git clone https://github.com/saaduly101/KP628---NutriPOS.git
 
-4. **Configure connection settings**
-   - Edit `/NUTRIPOS/backend/db/mysql_orders.php` and update the following fields with your local credentials:
-     ```php
-     $servername = "localhost";
-     $username = "root";
-     $password = "";
-     $dbname = "nutripos_db";
-     ```
+Step  — Host the Project
 
-5. **Start Apache and MySQL** via XAMPP Control Panel.
+Place the entire NUTRIPOS folder inside your local server directory (for example):
 
----
+C:\xampp\htdocs\NUTRIPOS
 
-## 🚀 Usage
 
-### 🧾 1. Product Management
-- Open:
-  ```
-  http://localhost/NUTRIPOS/public/products.php
-  ```
-- Features:
-  - View all saved recipes from the database  
-  - Add a new recipe  
-  - Edit or delete an existing recipe  
+Step  — Run the Application
 
-### 🍳 2. Custom Recipe Builder
-- Accessed by creating or editing a recipe:
-  ```
-  http://localhost/NUTRIPOS/public/custom_pos_builder.js
-  ```
-- Features:
-  - Add, edit, or remove individual ingredients  
-  - Automatically calculate nutritional data (via AFCD dataset integration)
-  - Update total calories, macros, and other nutrition values in real time  
+Start Apache and MySQL in XAMPP, then open your browser and go to:
 
-### 👩‍💼 3. Admin Management
-- Login page: `/NUTRIPOS/admin/login.php`
-- Admins can:
-  - Manage user access
-  - Review or remove recipes
-  - Track submission history
+http://localhost/NUTRIPOS/public/products.html
 
----
+Usage
+public/products.html is the starting point, allowing one to view the recipes saved in their database. From here, one can delete recipes, add a new recipe, or edit an existing recipe.
 
-## 🗄️ Directory Structure
+public/custom.html is accessed by editing an existing recipe or adding a new one from products.html. One can add, edit, or remove ingredients from this page.
 
-```
-NUTRIPOS/
-│
-├── admin/                 # Admin login and management
-│   ├── login.php
-│   ├── logout.php
-│   └── admin.php
-│
-├── backend/               # Core server-side logic and configuration
-│   ├── db/
-│   │   ├── mysql_orders.php
-│   │   └── schema.sql
-│   └── config/
-│
-├── public/                # Frontend pages and assets
-│   ├── products.php
-│   ├── custom_pos_builder.js
-│   ├── style.css
-│   ├── assets/
-│   └── receipt.html
-│
-├── vendor/                # Composer dependencies
-├── .env                   # Environment variables (optional)
-├── README.md
-└── composer.json
-```
 
----
-
-## 🧠 Features Overview
-
-- ✅ CRUD operations for recipes and ingredients  
-- ✅ Nutrition data auto-calculation (AFCD integration)  
-- ✅ Dynamic frontend UI with responsive design  
-- ✅ Secure login/logout system for admin users  
-- ✅ Simple local deployment via XAMPP  
-
----
-
-## 🧑‍💻 Contributors
-
-- **Gujun Lu (S3862761)** – Backend / UI Integration  
-- **Gabriel Jones** – Frontend / Testing  
-- **Vy Mulqueen** – UX & Documentation  
-- **Truong Phat Dang** – API & Database  
-
----
-
-## 🪄 Future Improvements
-
-- 🔗 Integration with Square POS API  
-- 📊 Nutrition analytics dashboard  
-- ☁️ Firebase sync for cloud storage  
-- 📱 Full mobile responsiveness  
-
----
-
-## 🖼️ Screenshot (Example)
-
-> Add your screenshot here, e.g.:
->
-> ![NutriPOS Dashboard](public/assets/dashboard-example.png)
-
----
-
-## 📄 License
-
-This project is for educational purposes under the RMIT University course *COSC2629 Software Engineering Project Management*.
+Team Members
+Name	Student ID	Role
+Gabriel Jones	S3957629	Team Leader
+Vy Mulqueen	S3933172	UI / API Developer
+Muhammad Nauman	S4007917	Back-end / API Developer
+Phat Dang Truong	S3963893	Front-end Developer
+Gujun Lu	S3862761	Front-end Developer
