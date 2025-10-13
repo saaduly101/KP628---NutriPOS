@@ -1,73 +1,207 @@
-# 🍽️ NutriPOS (KP628)
+# NutriPOS
 
-## 📖 Overview
-**NutriPOS** is a lightweight, web-based nutrition and recipe management system designed for integration with restaurant **Point-of-Sale (POS)** workflows.  
-It enables users to view, create, edit, and delete recipes, as well as manage ingredient lists through an intuitive browser interface.
+A lightweight, web-based nutrition and recipe management system designed for integration with restaurant Point-of-Sale (POS) workflows. NutriPOS lets staff and customers view nutrition info for menu items, create/edit recipes, and share results via email or QR on a receipt.
 
 ---
 
-## 🧰 Prerequisites
-To run the project locally, ensure the following requirements are met:
-
-- **XAMPP** (recommended) — includes Apache, PHP, and MySQL  
-  *(Alternatively, any other Apache-based distribution will also work.)*
-- A modern web browser (e.g., Chrome, Edge, or Firefox)
+## Key Features
+- **Recipe CRUD:** Create, edit, duplicate, and delete menu items (recipes) with precise grams per ingredient.
+- **Nutrition Engine:** Calculates kJ/kcal, macros, sugars, sodium, etc. using the Australian Food Composition Database (AFCD).
+- **Fast AFCD Search:** Fuzzy search with an in-memory cache for responsive ingredient lookup.
+- **POS-Aware Orders:** Create orders from the recipe builder or ingest completed orders from Square (optional).
+- **Shareable Receipts:** Email nutrition receipts and display QR codes that open a hosted receipt page.
+- **Admin Pages:** Login-gated admin views to review products and order history.
 
 ---
 
-## ⚙️ Installation & Setup
+## Architecture & Data Flow
+```
+Browser (public/*.php + JS)
+   ↕ AJAX (JSON)
+Backend (backend/*.php)
+   ↔ config/*.php  (env + overrides)
+   ↔ data/afcd.csv (cached in memory)
+   ↔ MySQL (via PDO)
+   ↔ data/*.json (local persistence for products)
+   ↔ SMTP (PHPMailer) for email_receipt.php
+   ↔ Square SDK (webhook) for completed orders (optional)
+```
 
-### Step 1️⃣ — Clone the Repository
+### Explanation
+- **Front-end:** Simple PHP pages with JavaScript calling backend JSON endpoints.
+- **Back-end:** PHP (Composer autoload), PDO for DB, Dotenv for configuration.
+- **Data:** AFCD CSV is cached for faster performance; products stored as JSON, orders and snapshots in MySQL.
+
+---
+
+## Directory Structure
+```
+NUTRIPOS/
+├─ public/                   # Browser-facing pages
+│  ├─ products.php           # Manage saved recipes
+│  ├─ custom_pos_builder.php # Build custom items + checkout
+│  ├─ receipt.html           # Minimal receipt + QR view
+│  └─ assets/ css/js/img
+├─ backend/                  # JSON APIs & core logic
+│  ├─ db.php                 # PDO connector (reads config)
+│  ├─ auth.php               # Sessions & auth helpers
+│  ├─ afcd_cache.php         # In-memory AFCD cache
+│  ├─ afcd_search_lib.php    # Fuzzy matching utilities
+│  ├─ afcd_search.php        # GET ?q=...
+│  ├─ nutrition_lib.php      # Nutrient maths helpers
+│  ├─ nutrition_calc.php     # POST ingredients[] grams[] → totals
+│  ├─ products_list.php      # GET list
+│  ├─ products_get.php       # GET one
+│  ├─ products_save.php      # POST create/update
+│  ├─ products_delete.php    # POST delete
+│  ├─ orders_create.php      # POST create order from builder
+│  ├─ orders_get.php         # GET one order (+nutrition)
+│  ├─ orders_list.php        # GET recent orders
+│  └─ email_receipt.php      # POST send email for order
+├─ admin/                    # Login-gated admin UI
+│  ├─ login.php  logout.php  admin.php  orders.php
+├─ db/                       # DB artefacts and utilities
+│  ├─ schema.sql             # MySQL schema
+│  └─ mysql_orders.php       # Simple HTML reporting view
+├─ config/
+│  ├─ config.php             # Loads env, sets sane defaults
+│  └─ local.php              # Optional dev/prod overrides
+├─ data/
+│  ├─ afcd.csv               # AFCD source data
+│  ├─ products.json          # Saved recipes (JSON)
+│  └─ NutriPOS_BasicRecipes.json
+├─ EXTERNAL_DATABASE/
+│  └─ square_webhook.php     # Square order webhook handler (optional)
+├─ composer.json             # Dependencies (Dotenv, PHPMailer, Square)
+└─ README.md                 # This file
+```
+
+---
+
+## Tech Stack
+- **PHP 8+**, Composer
+- **MySQL/MariaDB** (PDO)
+- **vlucas/phpdotenv**
+- **PHPMailer**
+- **Square PHP SDK (optional)**
+- **Vanilla JavaScript**
+
+---
+
+## Quick Start
+1. **Install PHP & Composer**
 ```bash
-git clone https://github.com/saaduly101/KP628---NutriPOS.git
+php -v
+composer -V
 ```
+2. **Install Dependencies**
+```bash
+composer install
+```
+3. **Create and Populate .env** (see below)
+4. **Create the Database**
+```bash
+mysql -u root -p -e "CREATE DATABASE nutripos CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+mysql -u root -p nutripos < NUTRIPOS/db/schema.sql
+```
+5. **Run Locally**
+```bash
+php -S 127.0.0.1:8080 -t NUTRIPOS/public
+```
+6. Visit http://127.0.0.1:8080/
 
-### Step 2️⃣ — Host the Project
-Place the entire `NUTRIPOS` folder inside your local server directory, for example:
-```
-C:\xampp\htdocs\NUTRIPOS
-```
+---
 
-### Step 3️⃣ — Run the Application
-Start **Apache** and **MySQL** in XAMPP, then open your browser and go to:
-```
-http://localhost/NUTRIPOS/public/products.html
+## Configuration
+NutriPOS reads environment variables from `.env`, merges defaults from `config/config.php`, and optional overrides from `config/local.php`.
+
+```env
+# App
+APP_ENV=local
+LOCALE=en_AU
+
+# Database
+DB_SERVERNAME=127.0.0.1
+DB_USERNAME=root
+DB_PASSWORD=secret
+DB_NAME=nutripos
+
+# SMTP
+SMTP_HOST=smtp-relay.example.com
+SMTP_PORT=587
+SMTP_USERNAME=postmaster@example.com
+SMTP_PASSWORD=app-password-or-token
+SMTP_FROM="NutriPOS <no-reply@example.com>"
+SMTP_SECURE=tls
+SMTP_ENABLED=true
+
+# Square (optional)
+SQUARE_ENVIRONMENT=SANDBOX
+SQUARE_ACCESS_TOKEN=your_token
+SQUARE_WEBHOOK_SIGNATURE_KEY=your_webhook_secret
+SQUARE_NOTIFICATION_URL=https://your.host/EXTERNAL_DATABASE/square_webhook.php
 ```
 
 ---
 
-## 🖥️ Usage
-
-### ▶️ Products Page
-The main entry point of the system is:
-```
-public/products.html
-```
-This page allows users to:
-- View all recipes in the database  
-- Add a new recipe  
-- Edit an existing recipe  
-- Delete a recipe  
-
-### 🧂 Custom Page
-The ingredient management interface is:
-```
-public/custom.html
-```
-This page is accessed when adding or editing a recipe from `products.html`.  
-Users can:
-- Add ingredients  
-- Edit ingredient details  
-- Remove ingredients  
+## API Endpoints
+| Category | Endpoint | Method | Description |
+|-----------|-----------|--------|--------------|
+| **AFCD & Nutrition** | `backend/afcd_search.php?q=` | GET | Fuzzy ingredient search |
+|  | `backend/nutrition_calc.php` | POST | Calculate total nutrition |
+| **Products** | `backend/products_save.php` | POST | Save or update a recipe |
+|  | `backend/products_list.php` | GET | List all recipes |
+| **Orders** | `backend/orders_create.php` | POST | Create a new order |
+|  | `backend/orders_get.php?id=` | GET | Retrieve one order |
+| **Receipts & Email** | `backend/email_receipt.php` | POST | Send order receipt |
+|  | `public/receipt.html?id=` | GET | View receipt by QR |
 
 ---
 
-## 👥 Team Members
+## Database Schema Overview
+| Table | Description |
+|--------|--------------|
+| **orders** | Stores order details (id, total, email, timestamp). |
+| **order_line_items** | Stores each item in an order with grams and price. |
+| **nutrition_snapshot** | Captures energy, protein, fat, carbs, sugars, sodium for each order. |
 
+---
+
+## AFCD Caching Mechanism
+- `backend/afcd_cache.php` loads `data/afcd.csv` once per PHP process.
+- `backend/afcd_search_lib.php` performs normalisation and fuzzy scoring.
+
+---
+
+## Security Notes
+- Keep `.env` outside the web root.
+- Secure `admin/*` pages with strong credentials.
+- Validate and sanitise all user input.
+- Verify Square webhook signatures.
+
+---
+
+## Troubleshooting
+| Issue | Solution |
+|--------|-----------|
+| **Dotenv class not found** | Run `composer install` and include autoload. |
+| **Cannot connect to database** | Check `.env` and MySQL configuration. |
+| **Email not sending** | Verify SMTP credentials. |
+| **AFCD search slow** | Ensure `afcd_cache.php` and `afcd.csv` are available. |
+| **Webhook not firing** | Confirm HTTPS endpoint matches Square configuration. |
+
+---
+
+## Team Members
 | Name | Student ID | Role |
 |------|-------------|------|
-| Gabriel Jones | S3957629 | Team Leader |
-| Vy Mulqueen | S3933172 | UI / API Developer |
-| Muhammad Nauman | S4007917 | Back-end / API Developer |
-| Phat Dang Truong | S3963893 | Front-end Developer |
-| Gujun Lu | S3862761 | Front-end Developer |
+| **Gabriel Jones** | S3957629 | Team Leader |
+| **Muhammad Nauman** | S4007917 | Backend / API Developer |
+| **Vy Mulqueen** | S3933172 | UI / API Developer |
+| **Phat Dang Truong** | S3963893 | Frontend Developer |
+| **Gujun Lu** | S3862761 | Frontend & Documentation Developer |
+
+---
+
+## Summary
+NutriPOS combines usability and transparency for restaurant management. It streamlines recipe creation, nutritional calculation, and POS order integration using PHP, MySQL, and AFCD data. Through a modular structure, cached data, and well-defined APIs, NutriPOS demonstrates practical web development principles. Its architecture ensures performance, maintainability, and scalability while addressing real-world needs for efficiency, accuracy, and health awareness.
