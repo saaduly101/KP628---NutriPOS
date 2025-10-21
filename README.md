@@ -4,6 +4,42 @@ A lightweight, web-based nutrition and recipe management system designed for int
 
 ---
 
+## Release Notes
+### Version 1.0 – Final Integrated Build (October 2025)
+
+NutriPOS combines all major functionalities from the **main** and **develop** branches into a single stable release.  
+Key updates include:
+
+- Implemented full POS builder with ingredient management and autocomplete.  
+- Added order creation, retrieval, and listing APIs.  
+- Integrated Square API with Sandbox/Production switch support.  
+- Added admin panel with authentication and dashboard.  
+- Developed nutrition engine using AFCD dataset with fuzzy ingredient search.  
+- Added email receipt system with nutrition details (PHPMailer integration).  
+- Improved UI responsiveness and styling for tablet and desktop layouts.  
+- Fixed database schema errors and enhanced MySQL reliability.  
+- Refined documentation, error handling, and project configuration files.  
+
+---
+
+## Change Log
+
+- **Aug 16–17, 2025:** Introduced POS Builder, database schema, and order management.  
+- **Aug 18–19, 2025:** Improved admin UI and merged style updates.  
+- **Aug 20–23, 2025:** Added Square SDK integration and initial testing.  
+- **Aug 25–26, 2025:** Implemented admin authentication and login validation.  
+- **Aug 27–29, 2025:** Created order and database testing modules.  
+- **Sep 1–5, 2025:** Refined POS builder logic and improved database connection handling.  
+- **Sep 11, 2025:** Added timezone validation and improved webhook structure.  
+- **Sep 12, 2025:** Merged and stabilized Square API integration; reverted redundant commits.  
+- **Sep 20–25, 2025:** Enhanced backend error handling and fixed minor SQL bugs.  
+- **Oct 4–8, 2025:** Added PHPMailer dependency; implemented email receipt functionality.  
+- **Oct 9–10, 2025:** Fixed email sending errors and improved order data handling.  
+- **Oct 11–12, 2025:** Merged `feature/email-receipts` and `style/square-ui` into `develop`.  
+- **Oct 13, 2025:** Updated README documentation, cleaned project structure, and finalized submission.  
+
+---
+
 ## Key Features
 - **Recipe CRUD:** Create, edit, duplicate, and delete menu items (recipes) with precise grams per ingredient.
 - **Nutrition Engine:** Calculates kJ/kcal, macros, sugars, sodium, etc. using the Australian Food Composition Database (AFCD).
@@ -13,6 +49,7 @@ A lightweight, web-based nutrition and recipe management system designed for int
 - **Admin Pages:** Login-gated admin views to review products and order history.
 
 ---
+
 
 ## Architecture & Data Flow
 ```
@@ -85,6 +122,23 @@ NUTRIPOS/
 - **PHPMailer**
 - **Square PHP SDK (optional)**
 - **Vanilla JavaScript**
+
+---
+
+## GitHub Repository
+
+**Project Repository (main):**  
+[https://github.com/saaduly101/KP628---NutriPOS/tree/main](https://github.com/saaduly101/KP628---NutriPOS/tree/main)
+
+**Active Development Branch (latest updates):**  
+[https://github.com/saaduly101/KP628---NutriPOS/tree/develop](https://github.com/saaduly101/KP628---NutriPOS/tree/develop)
+
+---
+
+## Deployed Project URL
+
+Currently not deployed online.  
+The project must be run locally using **XAMPP** or an equivalent PHP server.
 
 ---
 
