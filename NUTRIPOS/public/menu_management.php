@@ -6,7 +6,7 @@ auth_require_admin();
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NutriPOS – Custom Product Builder + POS Simulator</title>
+  <title>NutriPOS – Menu Management Page</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -17,7 +17,7 @@ auth_require_admin();
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
-        <li><a href="custom_pos_builder.php" class="nav-button active">Menu Builder</a></li>
+        <li><a href="menu_management.php" class="nav-button active">Menu Builder</a></li>
         <li><a href="products.php" class="nav-button">Menu Management</a></li>
         <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
       </ul>
@@ -85,24 +85,14 @@ auth_require_admin();
         </div>
       </div>
     </div>
-  <div class="hr"></div>
 
-  <h2>POS Simulator (no payment)</h2>
-  <p>Add customer email (optional) and “Create Order” to save, get a receipt link & QR. You can also email the receipt.</p>
-  <div class="flex">
-    <label for="custEmail" class="muted">Customer Email (optional):</label>
-    <input id="custEmail" value="customer@example.com" placeholder="customer@example.com" style="flex:1;padding:8px"/>
-    <button id="createOrderBtn" class="btn primary">Create Order</button>
-  </div>
-
-  </div>
 
 
 
 
 
   <script src="qrcode.js"></script>
-  <script src="custom_pos_builder.js"></script>
+  <script src="menu_management.js"></script>
 
   <script>
   function generateNutritionQR(totals){
