@@ -116,13 +116,13 @@ async function listProducts(){
 
     const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td><a href="custom_pos_builder.php#${p.id}" style="color: black">${p.name}</a></td>
+      <td><a href="menu_management.php#${p.id}" style="color: black">${p.name}</a></td>
       <td class="product-ingredients">
         ${ingredientsHtml}
       </td>
       <td>${new Date(p.updated_at).toLocaleString()}</td>
       <td>
-        <a href="custom_pos_builder.php#${p.id}" style="color: black">Edit</a>
+        <a href="menu_management.php#${p.id}" style="color: black">Edit</a>
         <button type="button" class="btn danger del" data-id="${p.id}">Remove</button>
       </td>
     `;
