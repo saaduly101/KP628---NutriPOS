@@ -17,7 +17,7 @@ auth_require_admin();
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
-        <li><a href="custom_pos_builder.php" class="nav-button">Menu Builder</a></li>
+        <li><a href="menu_management.php" class="nav-button">Menu Builder</a></li>
         <li><a href="products.php" class="nav-button active">Menu Management</a></li>
         <li><a href="../db/mysql_orders.php" class="nav-button">Order History</a></li>
       </ul>
@@ -54,7 +54,7 @@ auth_require_admin();
       </table>
 
       <div class="button-container nutripos-action-buttons">
-        <a href="custom_pos_builder.php" class="btn ghost nutripos-btn-secondary">+ Create New</a>
+        <a href="menu_management.php" class="btn ghost nutripos-btn-secondary">+ Create New</a>
       </div>
     </div>  
   </div>
