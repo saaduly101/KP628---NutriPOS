@@ -87,13 +87,6 @@ auth_require_admin();
     </div>
 
 
-
-
-
-
-  <script src="qrcode.js"></script>
-  <script src="menu_management.js"></script>
-
   <script>
   function generateNutritionQR(totals){
     // Stringify nicely for scanning
@@ -122,4 +115,8 @@ auth_require_admin();
   </script>
 
   </body>
+
+<script src="menu_management.js"></script>
+
+
 </html>
