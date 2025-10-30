@@ -1,5 +1,7 @@
 <?php
-require_once __DIR__.'/../backend/auth.php';
+require_once __DIR__ . '/../backend/auth.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
+
 auth_require_admin();
 ?>
 <!DOCTYPE html>
@@ -85,6 +87,8 @@ auth_require_admin();
         </div>
       </div>
     </div>
+
+    <script src="menu_management.js"></script>
 
 
   <script>

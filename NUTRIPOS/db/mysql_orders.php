@@ -100,7 +100,7 @@ mysqli_close($conn);
         <span class="admin-dashboard">Admin Dashboard</span>
       </div>
       <ul class="navbar-links">
-        <li><a href="../public/custom_pos_builder.php" class="nav-button">Menu Builder</a></li>
+        <li><a href="../public/menu_management.php" class="nav-button">Menu Builder</a></li>
         <li><a href="../public/products.php" class="nav-button">Menu Management</a></li>
         <li><a href="../db/mysql_orders.php" class="nav-button active">Order History</a></li>
       </ul>

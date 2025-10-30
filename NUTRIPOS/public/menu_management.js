@@ -249,124 +249,6 @@ async function createOrder(){
   const id = data.order_id;
   const t = data.totals || {};
 
-  // Build human-friendly QR payload (great for phone scanners)
-  const payload = [
-    `NutriPOS #${id}`,
-    `Energy: ${Number(t["Energy (kJ)"]||0).toFixed(1)} kJ (${Number(t["Calories (kcal)"]||0).toFixed(1)} kcal)`,
-    `Protein: ${Number(t["Protein (g)"]||0).toFixed(2)} g`,
-    `Fat: ${Number(t["Fat (g)"]||0).toFixed(2)} g`,
-    `Carb: ${Number(t["Carbohydrate (g)"]||0).toFixed(2)} g`,
-    `Sugars: ${Number(t["Sugars (g)"]||0).toFixed(2)} g`,
-    `Sodium: ${Number(t["Sodium (mg)"]||0).toFixed(0)} mg`
-  ].join('\n');
-
-  el.innerHTML = `
-    <h3>Order #${id} created</h3>
-    <ul>
-      <li>Energy: ${t["Energy (kJ)"]} kJ (${t["Calories (kcal)"]} kcal)</li>
-      <li>Protein: ${t["Protein (g)"]} g</li>
-      <li>Fat: ${t["Fat (g)"]} g</li>
-      <li>Carb: ${t["Carbohydrate (g)"]} g</li>
-      <li>Sugars: ${t["Sugars (g)"]} g</li>
-      <li>Sodium: ${t["Sodium (mg)"]} mg</li>
-    </ul>
-    <div style="display:flex;gap:16px;align-items:center;flex-wrap:wrap">
-      <p style="margin:0"><a href="receipt.html?id=${id}" target="_blank" class="btn ghost">Open receipt (QR)</a></p>
-
-    </div>
-    <form method = "post" action = "../backend/email_receipt.php" 
-    <div id="emailBlock" class="flex" style="margin-top:10px">
-      <input type = "email" id="emailTo" placeholder="customer@example.com" style="flex:1;padding:8px" value="${customer_email||''}">
-      <button id="emailBtn" class="btn" type = "button">Email Receipt</button>
-      <span id="emailStatus" class="muted"></span>
-    </div>
-
-`;
-
-
-alert(payload)
-const emailBtn = document.getElementById("emailBtn");
-const emailInput = document.getElementById("emailTo");
-const emailStatus = document.getElementById("emailStatus");
-
-emailBtn.onclick = async () => {
-  const customerEmail = emailInput.value.trim();
-
-  //  payload
-  const info = {
-    email: customerEmail,
-    subject: "NutriPOS receipt: " + id,
-    comment: payload   // <-- nutrition/order summary string
-  };
-  try {
-    const res = await fetch("../backend/email_receipt.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(info)
-    });
-    const out = await res.text();
-    emailStatus.textContent = out; // raw PHP echo for now
-  } catch (e) {
-    console.error(e);
-    emailStatus.textContent = "Error sending request";
-  }
-};
-
-  
-
-
-
-function makeCode () {		
-
-  // Clear old QR
-  document.getElementById('qrcode').innerHTML = '';
-
-  // Generate new QR
-  var text = "http://localhost/NutriPOS/NutriPOS/KP628---NutriPOS/NUTRIPOS/public/receipt.html?id=";
-  var link = text + id
-  // alert(link)
-	// qrcode.makeCode(link);
-
-  new QRCode(document.getElementById("qrcode"), {
-    text: link,
-    width: 256,
-    height: 256
-  });
-
-  
-}
-
-
-makeCode();
-
-$("#text").
-  on("blur", function () {
-    makeCode();
-  }).
-  on("keydown", function (e) {
-    if (e.keyCode == 13) {
-      makeCode();
-    }
-  })
-
-
-
-  // Email button
-  const btn = $('#emailBtn');
-  if (btn){
-    btn.onclick = async ()=>{
-      const to = $('#emailTo').value.trim();
-      if (!to){ alert('Enter an email'); return; }
-      const fd = new FormData();
-      fd.append('order_id', String(id));
-      fd.append('to', to);
-      const res2 = await fetch('../backend/email_receipt.php', { method:'POST', body: fd });
-      let r; try { r = await res2.json(); } catch(e){}
-      const st = $('#emailStatus');
-      if (r && r.ok){ st.textContent = 'Sent ✔'; st.style.color = 'green'; }
-      else { st.textContent = (r && r.error) ? r.error : 'Send failed'; st.style.color = 'red'; }
-    };
-  }
 }
 
 
@@ -375,7 +257,7 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   $('#addRow').onclick = ()=> addRow({});
   $('#calcBtn').onclick = calculate;
   $('#saveBtn').onclick = saveProduct;
-  $('#createOrderBtn').onclick = createOrder;
+const createBtn = $('#createOrderBtn'); if (createBtn) createBtn.onclick = createOrder;
 
   const idHash = location.hash && location.hash.substring(1);
   if (idHash){
@@ -391,6 +273,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
     addRow({name:'Mayonnaise', grams:20});
     addRow({name:'Cheddar Cheese', grams:30});
   }
+
+
+  
 });
 
 
