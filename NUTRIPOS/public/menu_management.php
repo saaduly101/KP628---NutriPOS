@@ -8,7 +8,7 @@ auth_require_admin();
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <title>NutriPOS – Menu Management Page</title>
+  <title>NutriPOS – Menu Builder Page</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -33,7 +33,7 @@ auth_require_admin();
   <div class="main-container">
     <div class="header">
       <div class="title-section">
-        <h2>NutriPOS – Menu Management</h2>
+        <h2>NutriPOS – Menu Builder</h2>
         <div class="subtitle">View, edit, or delete saved menu items.</div>
       </div>
     </div>
@@ -67,7 +67,6 @@ auth_require_admin();
         </div>
         <span class="muted">Tip: leave AFCD code empty and just type names—we'll smart-match.</span>
 
-        <div id="qrcode" style="display: none;"></div>
       </div>
 
       <div class="builder-right">
@@ -89,38 +88,7 @@ auth_require_admin();
     </div>
 
     <script src="menu_management.js"></script>
-
-
-  <script>
-  function generateNutritionQR(totals){
-    // Stringify nicely for scanning
-    const payload = `
-    Energy: ${totals["Energy (kJ)"]} kJ (${totals["Calories (kcal)"]} kcal)
-    Protein: ${totals["Protein (g)"]} g
-    Fat: ${totals["Fat (g)"]} g
-    Carbohydrate: ${totals["Carbohydrate (g)"]} g
-    Sugars: ${totals["Sugars (g)"]} g
-    Sodium: ${totals["Sodium (mg)"]} mg
-    `;
-  }
-
-  // Example usage after calculating:
-  const totals = {
-    "Energy (kJ)": 4221.7,
-    "Calories (kcal)": 1009.0,
-    "Protein (g)": 35.91,
-    "Fat (g)": 84.43,
-    "Carbohydrate (g)": 27.29,
-    "Sugars (g)": 12.04,
-    "Sodium (mg)": 836
-  };
-  generateNutritionQR(totals);
-
-  </script>
-
   </body>
-
-<script src="menu_management.js"></script>
 
 
 </html>

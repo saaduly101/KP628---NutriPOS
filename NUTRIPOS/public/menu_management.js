@@ -257,7 +257,9 @@ document.addEventListener('DOMContentLoaded', async ()=>{
   $('#addRow').onclick = ()=> addRow({});
   $('#calcBtn').onclick = calculate;
   $('#saveBtn').onclick = saveProduct;
-const createBtn = $('#createOrderBtn'); if (createBtn) createBtn.onclick = createOrder;
+  const createBtn = $('#createOrderBtn'); 
+  
+  if (createBtn) createBtn.onclick = createOrder;
 
   const idHash = location.hash && location.hash.substring(1);
   if (idHash){

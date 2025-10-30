@@ -296,7 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['send_email'])) {
     <nav class="navbar">
         <div class="navbar-container">
           <div class="logo-dashboard"> 
-            <a href="../admin/dashboard.php" class="logo">NutriPOS</a>
+            <a href="./db/mysql_orders.php" class="logo">NutriPOS</a>
             <span class="admin-dashboard">Admin Dashboard</span>
           </div>
           <ul class="navbar-links">
